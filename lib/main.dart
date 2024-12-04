@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:moneymanager/screens/add_transaction_screen.dart';
 import 'package:moneymanager/screens/home_screen.dart';
 import 'package:moneymanager/screens/login_screen.dart';
 import 'package:moneymanager/screens/profile_screen.dart';
@@ -17,17 +18,21 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Title',
+      title: 'Money Manager',
       debugShowCheckedModeBanner: false,
       initialRoute: '/splash',
       routes: {
-        '/': (context) => const HomeScreen(),
+        '/home': (context) => HomeScreen(), 
         '/transaction': (context) => const TransactionScreen(),
         '/report': (context) => const ReportScreen(),
-        '/profile': (context) => const ProfileScreen(),
+        '/profile': (context) => ProfileScreen(),
         '/login': (context) => const LoginScreen(),
         '/register': (context) => const RegisterScreen(),
-        '/splash': (context) => const SplashScreen(),
+        '/splash': (context) => const SplashScreen(),  
+        '/init-transaction': (context) => const AddTransactionScreen(),
+      },
+      onUnknownRoute: (settings) {
+        return MaterialPageRoute(builder: (context) => const HomeScreen());
       },
     );
   }
