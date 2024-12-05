@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
-import 'package:image_input/image_input.dart';
 import 'package:intl/intl.dart';
 import 'package:file_picker/file_picker.dart';
 

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:cool_alert/cool_alert.dart';
 import 'package:moneymanager/utils/Message_global.dart';
 import '../services/auth/login_service.dart';
