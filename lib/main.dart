@@ -32,7 +32,6 @@ class MyApp extends StatelessWidget {
         '/splash': (context) => const SplashScreen(),
         '/create-income': (context) => AddIncomeScreen(),
          '/create-expense': (context) => AddExpenseScreen(),
-
       },
       onUnknownRoute: (settings) {
         return MaterialPageRoute(builder: (context) => const HomeScreen());

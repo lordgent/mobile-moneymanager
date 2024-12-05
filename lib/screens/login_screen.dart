@@ -1,6 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
 import 'package:cool_alert/cool_alert.dart';
 import 'package:moneymanager/utils/Message_global.dart';
@@ -60,7 +58,7 @@ class LoginScreen extends StatelessWidget {
                         onTap: () {
                           Navigator.pushReplacementNamed(context, "/splash");
                         },
-                        child: Icon(
+                        child: const Icon(
                           Icons.arrow_back,
                           size: 27,
                         ),

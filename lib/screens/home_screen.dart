@@ -7,6 +7,7 @@ import 'package:moneymanager/widgets/bottom_tab.dart';
 import 'package:moneymanager/widgets/info_account.dart';
 import 'package:moneymanager/widgets/info_balance.dart';
 import 'package:moneymanager/widgets/transaction_card.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -19,12 +20,14 @@ class _HomeScreenState extends State<HomeScreen> {
   final balanceInfo = BalanceInfo();
   Balance? balance;
   late Future<List<TransactionModel>?> transactions;
+  String _permissionStatus = "Unknown";
 
   @override
   void initState() {
     super.initState();
     _fetchBalanceInfo();
     _fetchTransactions();
+        _checkPermission();
   }
 
   Future<void> _fetchBalanceInfo() async {
@@ -41,7 +44,12 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
- 
+   Future<void> _checkPermission() async {
+    PermissionStatus status = await Permission.storage.status;
+    setState(() {
+      _permissionStatus = status.toString();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:intl/intl.dart'; // Untuk NumberFormat
+import 'package:flutter/widgets.dart';
+import 'package:image_input/image_input.dart';
+import 'package:intl/intl.dart';
+import 'package:file_picker/file_picker.dart';
 
 class AddIncomeScreen extends StatefulWidget {
   const AddIncomeScreen({super.key});
@@ -10,13 +13,24 @@ class AddIncomeScreen extends StatefulWidget {
 }
 
 class _AddIncomeScreenState extends State<AddIncomeScreen> {
-  
+  String? _fileName;
+
+  // Fungsi untuk memilih file
+  Future<void> _pickFile() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles();
+
+    if (result != null) {
+      setState(() {
+        _fileName = result.files.single.name;
+      });
+    }
+  }
+
   final TextEditingController _amountController = TextEditingController();
   final List<String> Categories = ['Gaji', 'Penjualan', 'Investasi'];
 
   String formatRupiah(String amount) {
-    final number =
-        int.tryParse(amount.replaceAll(',', '')); 
+    final number = int.tryParse(amount.replaceAll(',', ''));
     if (number == null) {
       return '';
     }
@@ -24,7 +38,6 @@ class _AddIncomeScreenState extends State<AddIncomeScreen> {
         NumberFormat.currency(locale: 'id_ID', symbol: '', decimalDigits: 0);
     return format.format(number);
   }
-
 
   TextInputFormatter rupiahFormatter() {
     return TextInputFormatter.withFunction((oldValue, newValue) {
@@ -34,7 +47,7 @@ class _AddIncomeScreenState extends State<AddIncomeScreen> {
       }
 
       newText = newText.replaceAll(RegExp(r'[^0-9]'), '');
-      newText = formatRupiah(newText); 
+      newText = formatRupiah(newText);
       return TextEditingValue(
         text: newText,
         selection: TextSelection.collapsed(offset: newText.length),
@@ -56,7 +69,7 @@ class _AddIncomeScreenState extends State<AddIncomeScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                height: screenHeight * 0.4,
+                height: screenHeight * 0.2,
                 decoration: const BoxDecoration(
                   color: Color(0xFF00A86B),
                   borderRadius: BorderRadius.only(
@@ -97,7 +110,7 @@ class _AddIncomeScreenState extends State<AddIncomeScreen> {
                   ],
                 ),
               ),
-             const SizedBox(height: 20),
+              const SizedBox(height: 20),
               Container(
                 padding: const EdgeInsets.all(12),
                 child: const Text(
@@ -130,6 +143,7 @@ class _AddIncomeScreenState extends State<AddIncomeScreen> {
                 ),
               ),
               Container(
+                height: screenHeight * 0.6,
                 padding: const EdgeInsets.all(12),
                 width: double.infinity,
                 decoration: const BoxDecoration(
@@ -141,44 +155,98 @@ class _AddIncomeScreenState extends State<AddIncomeScreen> {
                 ),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    TextField(
-                      onChanged: (value) {},
-                      decoration: InputDecoration(
-                        labelText: 'Title',
-                        border: InputBorder.none,
-                        labelStyle: TextStyle(fontSize: screenWidth * 0.05),
-                      ),
-                    ),
-                    SizedBox(height: 10),
-                    TextField(
-                      onChanged: (value) {},
-                      decoration: InputDecoration(
-                        labelText: 'Description',
-                        border: InputBorder.none,
-                        fillColor: const Color.fromARGB(255, 210, 210, 210),
-                        labelStyle: TextStyle(fontSize: screenWidth * 0.05),
-                      ),
-                    ),
-                    SizedBox(height: 10),
                     Container(
-                      width: double.infinity,
-                      child: DropdownButton<String>(
-                        hint: Text("Category"),
-                        onChanged: (String? newValue) {},
-                        isExpanded: true,
-                        items: Categories.map<DropdownMenuItem<String>>(
-                          (String category) {
-                            return DropdownMenuItem<String>(
-                              value: category,
-                              child: Text(category),
-                            );
-                          },
-                        ).toList(),
+                      height: screenHeight * 0.4,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          Container(
+                            height: 30,
+                            child: TextField(
+                              onChanged: (value) {},
+                              decoration: InputDecoration(
+                                labelText: 'Title',
+                                border: InputBorder.none,
+                                labelStyle:
+                                    TextStyle(fontSize: screenWidth * 0.05),
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                              height: 30,
+                              child: TextField(
+                                onChanged: (value) {},
+                                decoration: InputDecoration(
+                                  labelText: 'Description',
+                                  border: InputBorder.none,
+                                  fillColor:
+                                      const Color.fromARGB(255, 210, 210, 210),
+                                  labelStyle:
+                                      TextStyle(fontSize: screenWidth * 0.05),
+                                ),
+                              )),
+                          Container(
+                            width: double.infinity,
+                            child: DropdownButton<String>(
+                              hint: Text(
+                                "Category",
+                                style: TextStyle(
+                                    fontSize: screenWidth * 0.05,
+                                    fontWeight: FontWeight.w400),
+                              ),
+                              onChanged: (String? newValue) {},
+                              isExpanded: true,
+                              items: Categories.map<DropdownMenuItem<String>>(
+                                (String category) {
+                                  return DropdownMenuItem<String>(
+                                    value: category,
+                                    child: Text(category),
+                                  );
+                                },
+                              ).toList(),
+                            ),
+                          ),
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              GestureDetector(
+                                onTap: _pickFile,
+                                child: Container(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "Attachment",
+                                        style: TextStyle(
+                                            fontSize: screenWidth * 0.05,
+                                            fontWeight: FontWeight.w400),
+                                      ),
+                                      const SizedBox(
+                                        height: 5,
+                                      ),
+                                      const Icon(
+                                        Icons.attachment,
+                                        color:
+                                            Color.fromARGB(255, 206, 206, 206),
+                                        size: 30,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              if (_fileName != null)
+                                Text(
+                                  'Picked file: $_fileName',
+                                  style: TextStyle(fontSize: 16),
+                                ),
+                            ],
+                          )
+                        ],
                       ),
                     ),
-                    SizedBox(height: 20),
                     Container(
                       width: double.infinity,
                       height: 60,
