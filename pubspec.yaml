@@ -70,6 +70,10 @@ flutter:
     - assets/icons/arrow-left.svg
     - assets/icons/income.svg
     - assets/icons/expense.svg
+    - assets/icons/user.svg
+    - assets/icons/home.svg
+    - assets/icons/pie-chart.svg
+    - assets/icons/transaction.svg
     
 
   # To add assets to your application, add an assets section, like this:

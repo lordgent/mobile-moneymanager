@@ -47,7 +47,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: BoxDecoration(color: Color.fromARGB(255, 245, 245, 245)),
+        decoration: BoxDecoration(color: Colors.white),
         padding: EdgeInsets.all(12),
         margin: EdgeInsets.only(top: 30),
         child: Column(

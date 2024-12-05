@@ -1,17 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class BottomTab extends StatefulWidget {
   const BottomTab({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _BottomTabState createState() => _BottomTabState();
 }
 
 class _BottomTabState extends State<BottomTab> {
+  final FlutterSecureStorage _secureStorage = const FlutterSecureStorage();
   int selectedIndex = 0;
 
-  void _onItemTapped(BuildContext context, int index) {
+  Future<int> _loadSelectedIndex() async {
+    String? savedIndex = await _secureStorage.read(key: 'selectedIndex');
+    return savedIndex != null ? int.parse(savedIndex) : 0;
+  }
+
+  void _saveSelectedIndex(int index) async {
+    await _secureStorage.write(key: 'selectedIndex', value: index.toString());
+  }
+
+  void _onItemTapped(BuildContext context, int index) async {
     if (selectedIndex == index) {
       return;
     }
@@ -19,11 +31,7 @@ class _BottomTabState extends State<BottomTab> {
     setState(() {
       selectedIndex = index;
     });
-
-    if (index == 2) {
-      _showInitTransactionModal(context);
-      return;
-    }
+    _saveSelectedIndex(index);
 
     String route;
     switch (index) {
@@ -43,10 +51,11 @@ class _BottomTabState extends State<BottomTab> {
         route = '/';
     }
 
-    Navigator.pushReplacementNamed(context, route);
+    Navigator.pushNamed(context, route);
   }
 
   void _showInitTransactionModal(BuildContext context) {
+    print("object");
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
@@ -59,32 +68,44 @@ class _BottomTabState extends State<BottomTab> {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Container(
-                decoration: BoxDecoration(
-                    color: const Color(0xFF00A86B),
-                    borderRadius: BorderRadius.all(Radius.circular(30))),
-                child: Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: SvgPicture.asset(
-                    color: Colors.white,
-                    'assets/icons/income.svg',
-                    width: 35.0,
-                    height: 35.0,
+              GestureDetector(
+                onTap: () {
+                  Navigator.pushNamed(context, "/create-income");
+                },
+                child: Container(
+                  decoration: const BoxDecoration(
+                    color: Color(0xFF00A86B),
+                    borderRadius: BorderRadius.all(Radius.circular(30)),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: SvgPicture.asset(
+                      color: Colors.white,
+                      'assets/icons/income.svg',
+                      width: 35.0,
+                      height: 35.0,
+                    ),
                   ),
                 ),
               ),
               const SizedBox(width: 35),
-              Container(
-                decoration: const BoxDecoration(
+              GestureDetector(
+                onTap: () {
+                  Navigator.pushNamed(context, "/create-expense");
+                },
+                child: Container(
+                  decoration: const BoxDecoration(
                     color: Color(0xFFFD3C4A),
-                    borderRadius: BorderRadius.all(Radius.circular(30))),
-                child: Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: SvgPicture.asset(
-                    color: Colors.white,
-                    'assets/icons/expense.svg',
-                    width: 35.0,
-                    height: 35.0,
+                    borderRadius: BorderRadius.all(Radius.circular(30)),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: SvgPicture.asset(
+                      color: Colors.white,
+                      'assets/icons/expense.svg',
+                      width: 35.0,
+                      height: 35.0,
+                    ),
                   ),
                 ),
               ),
@@ -97,44 +118,93 @@ class _BottomTabState extends State<BottomTab> {
 
   @override
   Widget build(BuildContext context) {
-    return BottomNavigationBar(
-      type: BottomNavigationBarType.fixed,
-      backgroundColor: Colors.white,
-      selectedItemColor: const Color.fromARGB(255, 149, 33, 243),
-      unselectedItemColor: Colors.grey,
-      currentIndex: selectedIndex,
-      onTap: (index) => _onItemTapped(context, index),
-      items: <BottomNavigationBarItem>[
-        const BottomNavigationBarItem(
-          icon: Icon(Icons.home),
-          label: 'Home',
-        ),
-        const BottomNavigationBarItem(
-          icon: Icon(Icons.import_export),
-          label: 'Transaction',
-        ),
-        BottomNavigationBarItem(
-          icon: Container(
-            decoration: BoxDecoration(
-              color: const Color.fromARGB(255, 149, 33, 243),
-              borderRadius: BorderRadius.circular(20),
+    return FutureBuilder<int>(
+      future: _loadSelectedIndex(), // Fetch the saved selected index
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const CircularProgressIndicator(); // Loading state, you can customize
+        }
+
+        if (snapshot.hasError) {
+          return const Text('Error loading index');
+        }
+
+        // Use the loaded selectedIndex
+        selectedIndex = snapshot.data ?? 0;
+
+        return BottomNavigationBar(
+          type: BottomNavigationBarType.fixed,
+          backgroundColor: Colors.white,
+          selectedItemColor: const Color.fromARGB(255, 149, 33, 243),
+          unselectedItemColor: Colors.grey,
+          currentIndex: selectedIndex,
+          onTap: (index) => _onItemTapped(context, index),
+          items: <BottomNavigationBarItem>[
+            BottomNavigationBarItem(
+              icon: SvgPicture.asset(
+                'assets/icons/home.svg',
+                width: 30.0,
+                height: 30.0,
+                color: selectedIndex == 0
+                    ? const Color.fromARGB(255, 149, 33, 243)
+                    : Colors.grey, // Change color based on selection
+              ),
+              label: 'Home',
             ),
-            child: const Padding(
-              padding: EdgeInsets.all(8.0),
-              child: Icon(Icons.add, color: Colors.white),
+            BottomNavigationBarItem(
+              icon: SvgPicture.asset(
+                'assets/icons/transaction.svg',
+                width: 30.0,
+                height: 30.0,
+                color: selectedIndex == 1
+                    ? const Color.fromARGB(255, 149, 33, 243)
+                    : Colors.grey, // Change color based on selection
+              ),
+              label: 'Transaction',
             ),
-          ),
-          label: '',
-        ),
-        const BottomNavigationBarItem(
-          icon: Icon(Icons.pie_chart),
-          label: 'Report',
-        ),
-        const BottomNavigationBarItem(
-          icon: Icon(Icons.person),
-          label: 'Profile',
-        ),
-      ],
+            BottomNavigationBarItem(
+              icon: GestureDetector(
+                onTap: () {
+                  _showInitTransactionModal(context);
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: const Color.fromARGB(255, 149, 33, 243),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: const Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Icon(Icons.add, color: Colors.white),
+                  ),
+                ),
+              ),
+              label: '',
+            ),
+            BottomNavigationBarItem(
+              icon: SvgPicture.asset(
+                'assets/icons/pie-chart.svg',
+                width: 30.0,
+                height: 30.0,
+                color: selectedIndex == 3
+                    ? const Color.fromARGB(255, 149, 33, 243)
+                    : Colors.grey, // Change color based on selection
+              ),
+              label: 'Report',
+            ),
+            BottomNavigationBarItem(
+              icon: SvgPicture.asset(
+                'assets/icons/user.svg',
+                width: 30.0,
+                height: 30.0,
+                color: selectedIndex == 4
+                    ? const Color.fromARGB(255, 149, 33, 243)
+                    : Colors.grey, // Change color based on selection
+              ),
+              label: 'Profile',
+            ),
+          ],
+        );
+      },
     );
   }
 }
