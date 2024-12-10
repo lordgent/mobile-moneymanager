@@ -26,22 +26,31 @@ class _InfoAccountState extends State<InfoAccount> {
   ];
 
   @override
+  void initState() {
+    super.initState();
+    int currentMonthIndex = DateTime.now().month - 1; 
+    selected = monthList[currentMonthIndex];
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween, 
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Container(
+          width: 50,
+          height: 50,
           decoration: BoxDecoration(
-            color: Color.fromARGB(255, 104, 104, 104),
-            borderRadius: BorderRadius.circular(20),
+            border: Border.all(
+              color: Color.fromARGB(255, 149, 33, 243),
+              width: 2,
+            ),
+            borderRadius: BorderRadius.circular(30),
           ),
-          child: const Padding(
-            padding: EdgeInsets.all(8.0),
-            child: Icon(Icons.person, color: Colors.white),
-          ),
+          child: Icon(Icons.person, color: Colors.white),
         ),
-                DropdownButton<String>(
-          hint: Text("choose a month"),
+        DropdownButton<String>(
+          hint: Text("Choose a month"),
           value: selected,
           onChanged: (String? newValue) {
             setState(() {
@@ -51,9 +60,14 @@ class _InfoAccountState extends State<InfoAccount> {
           items: monthList.map<DropdownMenuItem<String>>((String bulan) {
             return DropdownMenuItem<String>(
               value: bulan,
-              child: Text(bulan),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                child: Center(child: Text(bulan,style: TextStyle(fontSize: 20),textAlign: TextAlign.center),),
+              ),
             );
           }).toList(),
+          icon: null,  
+          underline: SizedBox(),  
         ),
         Container(
           decoration: BoxDecoration(
@@ -72,6 +86,3 @@ class _InfoAccountState extends State<InfoAccount> {
     );
   }
 }
-
-
-  

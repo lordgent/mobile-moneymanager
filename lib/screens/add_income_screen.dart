@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:moneymanager/models/categories_model.dart';
+import 'package:moneymanager/services/categories/list_category_service.dart';
 
 class AddIncomeScreen extends StatefulWidget {
   const AddIncomeScreen({super.key});
@@ -12,8 +14,23 @@ class AddIncomeScreen extends StatefulWidget {
 
 class _AddIncomeScreenState extends State<AddIncomeScreen> {
   String? _fileName;
+  late Future<List<CategoriesModel>?> categoryList;
+  final serviceCategory = CategoriesService();
+  CategoriesModel? selectedCategory;
 
-  // Fungsi untuk memilih file
+  @override
+  void initState() {
+    super.initState();
+    _fetchCategories();
+  }
+
+  Future<void> _fetchCategories() async {
+    categoryList = serviceCategory.fetchCategories();
+    setState(() {
+
+    });
+  }
+
   Future<void> _pickFile() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles();
 
@@ -25,7 +42,6 @@ class _AddIncomeScreenState extends State<AddIncomeScreen> {
   }
 
   final TextEditingController _amountController = TextEditingController();
-  final List<String> Categories = ['Gaji', 'Penjualan', 'Investasi'];
 
   String formatRupiah(String amount) {
     final number = int.tryParse(amount.replaceAll(',', ''));
@@ -127,7 +143,7 @@ class _AddIncomeScreenState extends State<AddIncomeScreen> {
                   keyboardType: TextInputType.numberWithOptions(decimal: true),
                   inputFormatters: [
                     FilteringTextInputFormatter.digitsOnly,
-                    LengthLimitingTextInputFormatter(15), //
+                    LengthLimitingTextInputFormatter(15),
                     rupiahFormatter(),
                   ],
                   decoration: const InputDecoration(
@@ -185,26 +201,49 @@ class _AddIncomeScreenState extends State<AddIncomeScreen> {
                                       TextStyle(fontSize: screenWidth * 0.05),
                                 ),
                               )),
-                          Container(
-                            width: double.infinity,
-                            child: DropdownButton<String>(
-                              hint: Text(
-                                "Category",
-                                style: TextStyle(
-                                    fontSize: screenWidth * 0.05,
-                                    fontWeight: FontWeight.w400),
-                              ),
-                              onChanged: (String? newValue) {},
-                              isExpanded: true,
-                              items: Categories.map<DropdownMenuItem<String>>(
-                                (String category) {
-                                  return DropdownMenuItem<String>(
-                                    value: category,
-                                    child: Text(category),
-                                  );
-                                },
-                              ).toList(),
-                            ),
+                          FutureBuilder<List<CategoriesModel>?>(
+                            future: categoryList,
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState == ConnectionState.waiting) {
+                                return const CircularProgressIndicator();
+                              }
+
+                              if (snapshot.hasError) {
+                                return Text("Error: ${snapshot.error}");
+                              }
+
+                              if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                                return const Text("No categories available.");
+                              }
+
+                              // Create the dropdown list of categories
+                              return Container(
+                                width: double.infinity,
+                                child: DropdownButton<CategoriesModel>(
+                                  hint: Text(
+                                    "Category",
+                                    style: TextStyle(
+                                        fontSize: screenWidth * 0.05,
+                                        fontWeight: FontWeight.w400),
+                                  ),
+                                  onChanged: (CategoriesModel? newValue) {
+                                    setState(() {
+                                      selectedCategory = newValue;
+                                    });
+                                  },
+                                  isExpanded: true,
+                                  value: selectedCategory,
+                                  items: snapshot.data!.map<DropdownMenuItem<CategoriesModel>>(
+                                    (CategoriesModel category) {
+                                      return DropdownMenuItem<CategoriesModel>(
+                                        value: category,
+                                        child: Text(category.name), // Assuming `CategoriesModel` has a `name` property
+                                      );
+                                    },
+                                  ).toList(),
+                                ),
+                              );
+                            },
                           ),
                           Column(
                             mainAxisAlignment: MainAxisAlignment.center,

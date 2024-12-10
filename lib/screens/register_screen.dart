@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:moneymanager/services/auth/register_service.dart';
+import 'package:cool_alert/cool_alert.dart';
+import 'package:moneymanager/utils/Message_global.dart';
 
 class RegisterScreen extends StatelessWidget {
   const RegisterScreen({super.key});
@@ -6,14 +9,49 @@ class RegisterScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
+    final RegisterService service = RegisterService();
+
+
     final TextEditingController emailController = TextEditingController();
     final TextEditingController passwordController = TextEditingController();
+    final TextEditingController fullNameController = TextEditingController();
+    final TextEditingController phoneNumberController = TextEditingController();
+
+
+  Future<void> saveRegister() async {
+    String email = emailController.text;
+    String password = passwordController.text;
+    String fullName= fullNameController.text;
+    String phoneNumber = phoneNumberController.text;
+
+    bool success = await service.register(email, password, fullName, phoneNumber);
+
+    if (success) {
+        CoolAlert.show(
+          context: context,
+          type: CoolAlertType.success,
+          text: MessageGlobal.registerSuccessful,
+        );
+        Future.delayed(Duration(seconds: 2), () {
+          Navigator.pushReplacementNamed(context, '/verification');
+        });
+      } else {
+        CoolAlert.show(
+          context: context,
+          type: CoolAlertType.error,
+          text: "Registration failed. Please try again.",
+        );
+        Future.delayed(Duration(seconds: 2), () {
+          Navigator.pushReplacementNamed(context, '/register');
+        });
+      }
+  }
 
 
     return Scaffold(
       body: GestureDetector(
          onTap: () {
-          FocusScope.of(context).requestFocus(FocusNode()); // Hilangkan fokus
+          FocusScope.of(context).requestFocus(FocusNode()); 
         },
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -28,13 +66,13 @@ class RegisterScreen extends StatelessWidget {
              Column(
               children: [
             TextField(
-                controller: emailController,
+                controller: fullNameController,
                 decoration: InputDecoration(
                   labelText: 'Fullname',
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12.0), // Radius border
+                    borderRadius: BorderRadius.circular(12.0), 
                     borderSide: const BorderSide(
-                        color: Colors.blue, width: 1), // Warna border
+                        color: Colors.blue, width: 1), 
                   ),
                 ),
               ),
@@ -44,24 +82,23 @@ class RegisterScreen extends StatelessWidget {
                 decoration: InputDecoration(
                   labelText: 'Email',
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12.0), // Radius border
+                    borderRadius: BorderRadius.circular(12.0), 
                     borderSide: const BorderSide(
-                        color: Colors.blue, width: 1), // Warna border
+                        color: Colors.blue, width: 1), 
                   ),
                 ),
               ),
               const SizedBox(height: 10),
-              TextField(
-                controller: passwordController,
+               TextField(
+                controller: phoneNumberController,
                 decoration: InputDecoration(
                   labelText: 'Phone Number',
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12.0), // Radius border
+                    borderRadius: BorderRadius.circular(12.0), 
                     borderSide: const BorderSide(
-                        color: Colors.blue, width: 1), // Warna border
+                        color: Colors.blue, width: 1), 
                   ),
                 ),
-                obscureText: true,
               ),
                const SizedBox(height: 10),
               TextField(
@@ -69,9 +106,9 @@ class RegisterScreen extends StatelessWidget {
                 decoration: InputDecoration(
                   labelText: 'Password',
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12.0), // Radius border
+                    borderRadius: BorderRadius.circular(12.0), 
                     borderSide: const BorderSide(
-                        color: Colors.blue, width: 1), // Warna border
+                        color: Colors.blue, width: 1), 
                   ),
                 ),
                 obscureText: true,
@@ -81,17 +118,15 @@ class RegisterScreen extends StatelessWidget {
                 width: double.infinity,
                 height: 50,
                 child: ElevatedButton(
+              
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color.fromARGB(255, 149, 33, 243),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12.0),
-                      // Radius border
+                      
                     ),
                   ),
-                  onPressed: () {
-                    print('Email: ${emailController.text}');
-                    print('Password: ${passwordController.text}');
-                  },
+                 onPressed: saveRegister,
                   child: const Text('Daftar', style: TextStyle(
                       color: Colors.white,
                       fontSize:16,

@@ -1,4 +1,3 @@
-import 'dart:ffi';
 
 import 'package:cool_alert/cool_alert.dart';
 import 'package:flutter/material.dart';
@@ -40,7 +39,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       type: CoolAlertType.success,
       text: MessageGlobal.logout,
     );
-    Navigator.pushReplacementNamed(context, '/login');
+    Navigator.pushReplacementNamed(context, '/welcome');
   }
 
   @override

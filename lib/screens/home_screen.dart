@@ -27,7 +27,7 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     _fetchBalanceInfo();
     _fetchTransactions();
-        _checkPermission();
+    _checkPermission();
   }
 
   Future<void> _fetchBalanceInfo() async {
@@ -59,7 +59,7 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Column(
           children: [
             const SizedBox(
-              height: 8,
+              height: 30,
             ),
             const InfoAccount(),
             const SizedBox(

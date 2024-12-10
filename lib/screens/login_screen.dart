@@ -55,7 +55,7 @@ class LoginScreen extends StatelessWidget {
                     children: [
                       GestureDetector(
                         onTap: () {
-                          Navigator.pushReplacementNamed(context, "/splash");
+                          Navigator.pushReplacementNamed(context, "/welcome");
                         },
                         child: const Icon(
                           Icons.arrow_back,
@@ -127,7 +127,6 @@ class LoginScreen extends StatelessWidget {
                                     const Color.fromARGB(255, 149, 33, 243),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(15.0),
-                                  // Radius border
                                 ),
                               ),
                               onPressed: saveCredentials,

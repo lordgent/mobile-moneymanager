@@ -6,7 +6,6 @@ class BottomTab extends StatefulWidget {
   const BottomTab({super.key});
 
   @override
-  // ignore: library_private_types_in_public_api
   _BottomTabState createState() => _BottomTabState();
 }
 
@@ -42,7 +41,7 @@ class _BottomTabState extends State<BottomTab> {
         route = '/transaction';
         break;
       case 3:
-        route = '/report';
+        route = '/budget';
         break;
       case 4:
         route = '/profile';
@@ -119,17 +118,16 @@ class _BottomTabState extends State<BottomTab> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<int>(
-      future: _loadSelectedIndex(), // Fetch the saved selected index
+      future: _loadSelectedIndex(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const CircularProgressIndicator(); // Loading state, you can customize
+          return const CircularProgressIndicator(); 
         }
 
         if (snapshot.hasError) {
           return const Text('Error loading index');
         }
 
-        // Use the loaded selectedIndex
         selectedIndex = snapshot.data ?? 0;
 
         return BottomNavigationBar(
@@ -147,7 +145,7 @@ class _BottomTabState extends State<BottomTab> {
                 height: 30.0,
                 color: selectedIndex == 0
                     ? const Color.fromARGB(255, 149, 33, 243)
-                    : Colors.grey, // Change color based on selection
+                    : Colors.grey, 
               ),
               label: 'Home',
             ),
@@ -158,7 +156,7 @@ class _BottomTabState extends State<BottomTab> {
                 height: 30.0,
                 color: selectedIndex == 1
                     ? const Color.fromARGB(255, 149, 33, 243)
-                    : Colors.grey, // Change color based on selection
+                    : Colors.grey, 
               ),
               label: 'Transaction',
             ),
@@ -187,9 +185,9 @@ class _BottomTabState extends State<BottomTab> {
                 height: 30.0,
                 color: selectedIndex == 3
                     ? const Color.fromARGB(255, 149, 33, 243)
-                    : Colors.grey, // Change color based on selection
+                    : Colors.grey, 
               ),
-              label: 'Report',
+              label: 'Budget',
             ),
             BottomNavigationBarItem(
               icon: SvgPicture.asset(
@@ -198,7 +196,7 @@ class _BottomTabState extends State<BottomTab> {
                 height: 30.0,
                 color: selectedIndex == 4
                     ? const Color.fromARGB(255, 149, 33, 243)
-                    : Colors.grey, // Change color based on selection
+                    : Colors.grey, 
               ),
               label: 'Profile',
             ),

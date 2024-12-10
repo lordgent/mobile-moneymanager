@@ -78,6 +78,7 @@ flutter:
     - assets/icons/home.svg
     - assets/icons/pie-chart.svg
     - assets/icons/transaction.svg
+    - assets/icons/dropdown.svg
     
 flutter_icons:
   android: true

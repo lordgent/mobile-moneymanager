@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:moneymanager/services/auth/login_service.dart';
-import 'package:moneymanager/screens/home_screen.dart';
-import 'package:moneymanager/screens/login_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -16,16 +14,13 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    // Wait for 2 seconds and check the authentication status
     Future.delayed(Duration(seconds: 2), () async {
       bool isAuthenticated = await authService.isAuthenticated();
       print("is auth $isAuthenticated ");
       if (isAuthenticated) {
-
         Navigator.pushReplacementNamed(context, '/home');
       } else {
-
-        Navigator.pushReplacementNamed(context, '/login');
+        Navigator.pushReplacementNamed(context, '/welcome');
       }
     });
   }
@@ -34,7 +29,24 @@ class _SplashScreenState extends State<SplashScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: CircularProgressIndicator(),
+        child: Container(
+          width: double.infinity,
+          height: double.infinity,
+          decoration: BoxDecoration(
+            color: Color.fromARGB(255, 149, 33, 243),
+          ),
+          child: Center(
+            child: SizedBox(
+              width: 60, 
+              height: 60,
+              child: CircularProgressIndicator(
+                strokeWidth: 6.0,
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.white), 
+                backgroundColor: Colors.white30,
+              ),
+            ),
+          ),
+        ),
       ),
     );
   }
