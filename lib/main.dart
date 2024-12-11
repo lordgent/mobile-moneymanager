@@ -34,10 +34,10 @@ class MyApp extends StatelessWidget {
         '/register': (context) => const RegisterScreen(),
         '/splash': (context) => const SplashScreen(),
         '/create-income': (context) => AddIncomeScreen(),
-         '/create-expense': (context) => AddExpenseScreen(),
-         '/verification': (context) => OtpVerificationScreen(),
-         '/budget': (context) => BudgetScreen(),
-         '/welcome': (context) => WelcomeScreen(),
+        '/create-expense': (context) => AddExpenseScreen(),
+        '/verification': (context) => OtpVerificationScreen(),
+        '/budget': (context) => BudgetScreen(),
+        '/welcome': (context) => WelcomeScreen(),
       },
       onUnknownRoute: (settings) {
         return MaterialPageRoute(builder: (context) => const HomeScreen());

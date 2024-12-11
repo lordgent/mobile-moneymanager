@@ -12,7 +12,7 @@ class CategoriesService {
   }
 
   Future<List<CategoriesModel>?> fetchCategories() async {
-    const url = 'http://108.136.230.98:8080/api/v1/user/categories';
+    const url = 'http://108.136.230.98:8080/api/v1/user/categories/Income';
 
     try {
       final token = await _getToken();

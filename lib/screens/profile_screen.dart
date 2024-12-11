@@ -1,4 +1,3 @@
-
 import 'package:cool_alert/cool_alert.dart';
 import 'package:flutter/material.dart';
 import 'package:moneymanager/services/auth/login_service.dart';
@@ -70,12 +69,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text("username",
+                      const Text("name",
                           style: TextStyle(
                               color: Color.fromARGB(255, 62, 62, 62),
                               fontWeight: FontWeight.w400,
                               fontSize: 15)),
-                      Text( balance != null ? balance!.fullName : "-",
+                      Text(balance != null ? balance!.fullName : "-",
                           style: const TextStyle(
                               color: Color.fromARGB(255, 62, 62, 62),
                               fontWeight: FontWeight.w400,
@@ -87,7 +86,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
             Container(
               decoration: BoxDecoration(color: Colors.white),
-              width: double.infinity, // Full width
+              width: double.infinity, 
               margin: const EdgeInsets.only(top: 30),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,

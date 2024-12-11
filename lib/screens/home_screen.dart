@@ -63,7 +63,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             const InfoAccount(),
             const SizedBox(
-              height: 20,
+              height: 10,
             ),
             const Text("Account Balance",
                 style: TextStyle(

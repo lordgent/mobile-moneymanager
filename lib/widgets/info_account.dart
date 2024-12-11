@@ -38,8 +38,8 @@ class _InfoAccountState extends State<InfoAccount> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Container(
-          width: 50,
-          height: 50,
+          width: 45,
+          height: 45,
           decoration: BoxDecoration(
             border: Border.all(
               color: Color.fromARGB(255, 149, 33, 243),
@@ -70,6 +70,8 @@ class _InfoAccountState extends State<InfoAccount> {
           underline: SizedBox(),  
         ),
         Container(
+          width: 45,
+          height: 45,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
           ),
