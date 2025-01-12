@@ -9,24 +9,20 @@ import 'package:moneymanager/services/categories/list_category_service.dart';
 import 'package:moneymanager/services/transaction/add_income_service.dart';
 import 'package:cool_alert/cool_alert.dart';
 
-class AddIncomeScreen extends StatefulWidget {
-  const AddIncomeScreen({super.key});
+class CreateBudgetScreen extends StatefulWidget {
+  const CreateBudgetScreen({super.key});
 
   @override
-  _AddIncomeScreenState createState() => _AddIncomeScreenState();
+  _CreateBudgetScreenState createState() => _CreateBudgetScreenState();
 }
 
-class _AddIncomeScreenState extends State<AddIncomeScreen> {
-  String? _fileName;
+class _CreateBudgetScreenState extends State<CreateBudgetScreen> {
   late Future<List<CategoriesModel>?> categoryList;
   final serviceCategory = CategoriesService();
   CategoriesModel? selectedCategory;
-  File? _imageFile;
   bool isLoading = false;
 
   final TextEditingController _amountController = TextEditingController();
-  final TextEditingController _titleController = TextEditingController();
-  final TextEditingController _descriptionController = TextEditingController();
 
   final AddIncomeService addIncomeService = AddIncomeService();
 
@@ -37,18 +33,8 @@ class _AddIncomeScreenState extends State<AddIncomeScreen> {
   }
 
   Future<void> _fetchCategories() async {
-    categoryList = serviceCategory.fetchCategories("Income");
+    categoryList = serviceCategory.fetchCategories("Expense");
     setState(() {});
-  }
-
-  Future<void> _pickFile() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles();
-    if (result != null) {
-      setState(() {
-        _fileName = result.files.single.name;
-        _imageFile = File(result.files.single.path!);
-      });
-    }
   }
 
   String formatRupiah(String amount) {
@@ -81,10 +67,7 @@ class _AddIncomeScreenState extends State<AddIncomeScreen> {
       isLoading = true;
     });
 
-    if (_amountController.text.isEmpty ||
-        selectedCategory == null ||
-        _titleController.text.isEmpty ||
-        _descriptionController.text.isEmpty) {
+    if (_amountController.text.isEmpty || selectedCategory == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Please fill in all fields')),
       );
@@ -96,18 +79,10 @@ class _AddIncomeScreenState extends State<AddIncomeScreen> {
 
     String amount = _amountController.text;
     String categoryId = selectedCategory!.id;
-    String title = _titleController.text;
-    String description = _descriptionController.text;
 
-    bool success = await addIncomeService.AddIncome(
-      amount,
-      categoryId,
-      _imageFile != null && _imageFile!.path.isNotEmpty ? _imageFile!.path : '',
-      title,
-      description,
-      "94985fc2-195f-478f-a182-7dd6a7754ea7",
-    );
+    String categoryAction = "Income";
 
+    bool success = true;
     if (success) {
       setState(() {
         isLoading = false;
@@ -140,14 +115,17 @@ class _AddIncomeScreenState extends State<AddIncomeScreen> {
       body: SingleChildScrollView(
         child: Container(
           width: double.infinity,
-          decoration: const BoxDecoration(color: Color(0xFF00A86B)),
+          decoration: const BoxDecoration(
+            color: const Color.fromARGB(255, 123, 73, 241),
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Container(
-                height: screenHeight * 0.2,
+                height: screenHeight * 0.1,
                 decoration: const BoxDecoration(
-                  color: Color(0xFF00A86B),
+                  color: const Color.fromARGB(255, 123, 73, 241),
                   borderRadius: BorderRadius.only(
                     bottomLeft: Radius.circular(25),
                     bottomRight: Radius.circular(25),
@@ -155,7 +133,7 @@ class _AddIncomeScreenState extends State<AddIncomeScreen> {
                 ),
                 child: Column(
                   children: [
-                    SizedBox(height: 50),
+                    SizedBox(height: 40),
                     Container(
                       padding: EdgeInsets.symmetric(horizontal: 16),
                       child: Row(
@@ -172,7 +150,7 @@ class _AddIncomeScreenState extends State<AddIncomeScreen> {
                             ),
                           ),
                           const Text(
-                            "Income",
+                            "Budget",
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 20,
@@ -190,11 +168,11 @@ class _AddIncomeScreenState extends State<AddIncomeScreen> {
               Container(
                 padding: const EdgeInsets.all(12),
                 child: const Text(
-                  "How much?",
+                  "How much do yo want to spend?",
                   style: TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.w300,
-                    fontSize: 32,
+                    fontSize: 24,
                   ),
                 ),
               ),
@@ -240,33 +218,7 @@ class _AddIncomeScreenState extends State<AddIncomeScreen> {
                       height: screenHeight * 0.4,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
-                          Container(
-                            height: 30,
-                            child: TextField(
-                              controller: _titleController,
-                              decoration: InputDecoration(
-                                labelText: 'Title',
-                                border: InputBorder.none,
-                                labelStyle:
-                                    TextStyle(fontSize: screenWidth * 0.05),
-                              ),
-                            ),
-                          ),
-                          SizedBox(
-                              height: 30,
-                              child: TextField(
-                                controller: _descriptionController,
-                                decoration: InputDecoration(
-                                  labelText: 'Description',
-                                  border: InputBorder.none,
-                                  fillColor:
-                                      const Color.fromARGB(255, 210, 210, 210),
-                                  labelStyle:
-                                      TextStyle(fontSize: screenWidth * 0.05),
-                                ),
-                              )),
                           FutureBuilder<List<CategoriesModel>?>(
                             future: categoryList,
                             builder: (context, snapshot) {
@@ -289,7 +241,7 @@ class _AddIncomeScreenState extends State<AddIncomeScreen> {
                                   hint: Text(
                                     "Category",
                                     style: TextStyle(
-                                        fontSize: screenWidth * 0.05,
+                                        fontSize: 24,
                                         fontWeight: FontWeight.w400),
                                   ),
                                   onChanged: (CategoriesModel? newValue) {
@@ -312,42 +264,6 @@ class _AddIncomeScreenState extends State<AddIncomeScreen> {
                               );
                             },
                           ),
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              GestureDetector(
-                                onTap: _pickFile,
-                                child: Container(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        "Attachment",
-                                        style: TextStyle(
-                                            fontSize: screenWidth * 0.05,
-                                            fontWeight: FontWeight.w400),
-                                      ),
-                                      const SizedBox(
-                                        height: 5,
-                                      ),
-                                      const Icon(
-                                        Icons.attachment,
-                                        color:
-                                            Color.fromARGB(255, 206, 206, 206),
-                                        size: 30,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              if (_fileName != null)
-                                Text(
-                                  'Picked file: $_fileName',
-                                  style: TextStyle(fontSize: 16),
-                                ),
-                            ],
-                          )
                         ],
                       ),
                     ),
@@ -357,7 +273,7 @@ class _AddIncomeScreenState extends State<AddIncomeScreen> {
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           backgroundColor:
-                              const Color.fromARGB(255, 149, 33, 243),
+                              const Color.fromARGB(255, 123, 73, 241),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(15.0),
                           ),

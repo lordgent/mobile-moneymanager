@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:moneymanager/services/auth/login_service.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -10,6 +11,7 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   final AuthService authService = AuthService();
+  String _permissionStatus = "Unknown";
 
   @override
   void initState() {
@@ -22,6 +24,14 @@ class _SplashScreenState extends State<SplashScreen> {
       } else {
         Navigator.pushReplacementNamed(context, '/welcome');
       }
+    });
+    _checkPermission();
+  }
+
+  Future<void> _checkPermission() async {
+    PermissionStatus status = await Permission.storage.status;
+    setState(() {
+      _permissionStatus = status.toString();
     });
   }
 
@@ -37,11 +47,11 @@ class _SplashScreenState extends State<SplashScreen> {
           ),
           child: Center(
             child: SizedBox(
-              width: 60, 
+              width: 60,
               height: 60,
               child: CircularProgressIndicator(
                 strokeWidth: 6.0,
-                valueColor: AlwaysStoppedAnimation<Color>(Colors.white), 
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                 backgroundColor: Colors.white30,
               ),
             ),

@@ -1,7 +1,14 @@
+import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:moneymanager/models/categories_model.dart';
+import 'package:moneymanager/services/categories/list_category_service.dart';
+import 'package:moneymanager/services/transaction/add_expense_service.dart';
+import 'package:moneymanager/services/transaction/add_income_service.dart'; // Import AddIncomeService
+import 'package:cool_alert/cool_alert.dart';
 
 class AddExpenseScreen extends StatefulWidget {
   const AddExpenseScreen({super.key});
@@ -12,20 +19,39 @@ class AddExpenseScreen extends StatefulWidget {
 
 class _AddExpenseScreenState extends State<AddExpenseScreen> {
   String? _fileName;
+  late Future<List<CategoriesModel>?> categoryList;
+  final serviceCategory = CategoriesService();
+  CategoriesModel? selectedCategory;
+  File? _imageFile;
+  bool isLoading = false;
 
-  // Fungsi untuk memilih file
+  final TextEditingController _amountController = TextEditingController();
+  final TextEditingController _titleController = TextEditingController();
+  final TextEditingController _descriptionController = TextEditingController();
+
+  final AddExpenseService addeAddExpenseService = AddExpenseService();
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchCategories();
+  }
+
+  Future<void> _fetchCategories() async {
+    categoryList = serviceCategory.fetchCategories("Expense");
+    setState(() {});
+  }
+
   Future<void> _pickFile() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles();
-
+    print("upload file");
     if (result != null) {
       setState(() {
         _fileName = result.files.single.name;
+        _imageFile = File(result.files.single.path!);
       });
     }
   }
-
-  final TextEditingController _amountController = TextEditingController();
-  final List<String> Categories = ['Gaji', 'Penjualan', 'Investasi'];
 
   String formatRupiah(String amount) {
     final number = int.tryParse(amount.replaceAll(',', ''));
@@ -43,7 +69,6 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
       if (newText.isEmpty) {
         return TextEditingValue(text: '');
       }
-
       newText = newText.replaceAll(RegExp(r'[^0-9]'), '');
       newText = formatRupiah(newText);
       return TextEditingValue(
@@ -51,6 +76,64 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
         selection: TextSelection.collapsed(offset: newText.length),
       );
     });
+  }
+
+  Future<void> _onContinue() async {
+    setState(() {
+      isLoading = true;
+    });
+
+    if (_amountController.text.isEmpty ||
+        selectedCategory == null ||
+        _titleController.text.isEmpty ||
+        _descriptionController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please fill in all fields')),
+      );
+      setState(() {
+        isLoading = false;
+      });
+      return;
+    }
+
+    String amount = _amountController.text;
+    String categoryId = selectedCategory!.id;
+    String title = _titleController.text;
+    String description = _descriptionController.text;
+
+    String imagePath = _imageFile != null && _imageFile!.path.isNotEmpty
+        ? _imageFile!.path
+        : '';
+
+    bool success = await addeAddExpenseService.AddExpense(
+      amount,
+      categoryId,
+      imagePath,
+      title,
+      description,
+      "13592003-b611-4312-b3d6-746da6c9de58",
+    );
+
+    if (success) {
+      setState(() {
+        isLoading = false;
+      });
+      CoolAlert.show(
+        context: context,
+        type: CoolAlertType.success,
+        text: "Expense added successfully",
+      );
+      Future.delayed(Duration(seconds: 2), () {
+        Navigator.pushReplacementNamed(context, '/home');
+      });
+    } else {
+      setState(() {
+        isLoading = false;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Failed to add expense')),
+      );
+    }
   }
 
   @override
@@ -62,14 +145,14 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
       body: SingleChildScrollView(
         child: Container(
           width: double.infinity,
-          decoration: const BoxDecoration(color: Color(0xFFFD3C4A),),
+          decoration: const BoxDecoration(color: Color(0xFFFD3C4A)),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
                 height: screenHeight * 0.2,
                 decoration: const BoxDecoration(
-                  color: Color(0xFFFD3C4A), 
+                  color: Color(0xFFFD3C4A),
                   borderRadius: BorderRadius.only(
                     bottomLeft: Radius.circular(25),
                     bottomRight: Radius.circular(25),
@@ -127,9 +210,13 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                   keyboardType: TextInputType.numberWithOptions(decimal: true),
                   inputFormatters: [
                     FilteringTextInputFormatter.digitsOnly,
-                    LengthLimitingTextInputFormatter(15), //
+                    LengthLimitingTextInputFormatter(15),
                     rupiahFormatter(),
                   ],
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 36,
+                  ),
                   decoration: const InputDecoration(
                     labelStyle: TextStyle(
                       color: Colors.white,
@@ -163,7 +250,7 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                           Container(
                             height: 30,
                             child: TextField(
-                              onChanged: (value) {},
+                              controller: _titleController,
                               decoration: InputDecoration(
                                 labelText: 'Title',
                                 border: InputBorder.none,
@@ -175,7 +262,7 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                           SizedBox(
                               height: 30,
                               child: TextField(
-                                onChanged: (value) {},
+                                controller: _descriptionController,
                                 decoration: InputDecoration(
                                   labelText: 'Description',
                                   border: InputBorder.none,
@@ -185,26 +272,50 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                                       TextStyle(fontSize: screenWidth * 0.05),
                                 ),
                               )),
-                          Container(
-                            width: double.infinity,
-                            child: DropdownButton<String>(
-                              hint: Text(
-                                "Category",
-                                style: TextStyle(
-                                    fontSize: screenWidth * 0.05,
-                                    fontWeight: FontWeight.w400),
-                              ),
-                              onChanged: (String? newValue) {},
-                              isExpanded: true,
-                              items: Categories.map<DropdownMenuItem<String>>(
-                                (String category) {
-                                  return DropdownMenuItem<String>(
-                                    value: category,
-                                    child: Text(category),
-                                  );
-                                },
-                              ).toList(),
-                            ),
+                          FutureBuilder<List<CategoriesModel>?>(
+                            future: categoryList,
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return const CircularProgressIndicator();
+                              }
+
+                              if (snapshot.hasError) {
+                                return Text("Error: ${snapshot.error}");
+                              }
+
+                              if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                                return const Text("No categories available.");
+                              }
+
+                              return Container(
+                                width: double.infinity,
+                                child: DropdownButton<CategoriesModel>(
+                                  hint: Text(
+                                    "Category",
+                                    style: TextStyle(
+                                        fontSize: screenWidth * 0.05,
+                                        fontWeight: FontWeight.w400),
+                                  ),
+                                  onChanged: (CategoriesModel? newValue) {
+                                    setState(() {
+                                      selectedCategory = newValue;
+                                    });
+                                  },
+                                  isExpanded: true,
+                                  value: selectedCategory,
+                                  items: snapshot.data!
+                                      .map<DropdownMenuItem<CategoriesModel>>(
+                                    (CategoriesModel category) {
+                                      return DropdownMenuItem<CategoriesModel>(
+                                        value: category,
+                                        child: Text(category.name),
+                                      );
+                                    },
+                                  ).toList(),
+                                ),
+                              );
+                            },
                           ),
                           Column(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -256,12 +367,17 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                             borderRadius: BorderRadius.circular(15.0),
                           ),
                         ),
-                        onPressed: () {},
-                        child: const Text('Continue',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 18,
-                                fontWeight: FontWeight.w600)),
+                        onPressed: isLoading ? () {} : _onContinue,
+                        child: isLoading
+                            ? const CircularProgressIndicator(
+                                valueColor:
+                                    AlwaysStoppedAnimation<Color>(Colors.white),
+                              )
+                            : const Text('Continue',
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w600)),
                       ),
                     ),
                   ],

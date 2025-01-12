@@ -11,8 +11,8 @@ class CategoriesService {
     return token;
   }
 
-  Future<List<CategoriesModel>?> fetchCategories() async {
-    const url = 'http://108.136.230.98:8080/api/v1/user/categories/Income';
+  Future<List<CategoriesModel>?> fetchCategories(String typeCategory) async {
+    final url = 'http://108.136.230.98:8080/api/v1/user/categories/$typeCategory';
 
     try {
       final token = await _getToken();

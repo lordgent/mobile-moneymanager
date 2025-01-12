@@ -15,7 +15,7 @@ class WelcomeScreen extends StatelessWidget {
           Image.asset("assets/images/bg-1-p.png"),
           Container(
             width: double.infinity,
-            child:  Column(
+            child:  const Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text("Cara Kontrol Keuanganmu",style: TextStyle(fontSize: 30,fontWeight: FontWeight.bold,color: Color.fromARGB(255, 59, 59, 59),),textAlign: TextAlign.center),

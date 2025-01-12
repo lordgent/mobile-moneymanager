@@ -38,8 +38,8 @@ class _InfoAccountState extends State<InfoAccount> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Container(
-          width: 45,
-          height: 45,
+          width: 40,
+          height: 40,
           decoration: BoxDecoration(
             border: Border.all(
               color: Color.fromARGB(255, 149, 33, 243),
@@ -60,14 +60,12 @@ class _InfoAccountState extends State<InfoAccount> {
           items: monthList.map<DropdownMenuItem<String>>((String bulan) {
             return DropdownMenuItem<String>(
               value: bulan,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 10),
-                child: Center(child: Text(bulan,style: TextStyle(fontSize: 20),textAlign: TextAlign.center),),
+              child: Container(
+                child:Text(bulan,style: TextStyle(fontSize: 20),textAlign: TextAlign.center)
               ),
             );
           }).toList(),
           icon: null,  
-          underline: SizedBox(),  
         ),
         Container(
           width: 45,
@@ -75,9 +73,8 @@ class _InfoAccountState extends State<InfoAccount> {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
           ),
-          child: const Padding(
-            padding: EdgeInsets.all(8.0),
-            child: Icon(
+          child:  Container(
+            child: const Icon(
               Icons.notifications,
               color: Color.fromARGB(255, 153, 43, 226),
               size: 35,

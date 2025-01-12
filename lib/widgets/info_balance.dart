@@ -1,16 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:intl/intl.dart';
 
 class InfoBalance extends StatelessWidget {
-  const InfoBalance({super.key});
+  final String typeIncome;
+  final String incomeAmount;
+  final String typeExpense;
+  final String expenseAmount;
+
+  const InfoBalance(
+      {super.key,
+      required this.typeIncome,
+      required this.incomeAmount,
+      required this.typeExpense,
+      required this.expenseAmount});
 
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
 
     double containerHeight = 80;
-    double iconSize = screenWidth * 0.08; 
-    double textFontSize = screenWidth * 0.045; 
+    double iconSize = screenWidth * 0.08;
+
+    String formatIncomeAmount(String incomeAmount) {
+      if (incomeAmount.isEmpty || double.tryParse(incomeAmount) == null) {
+        return '0';
+      } else {
+        double amount = double.parse(incomeAmount);
+        return NumberFormat("#,##0", "id_ID").format(amount);
+      }
+    }
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -29,14 +48,14 @@ class InfoBalance extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   Container(
-                      width: 50,
+                    width: 50,
                     height: 50,
                     decoration: BoxDecoration(
                       color: Color.fromARGB(255, 255, 255, 255),
                       borderRadius: BorderRadius.circular(14),
                     ),
                     child: Padding(
-                      padding: EdgeInsets.all(12), 
+                      padding: EdgeInsets.all(12),
                       child: SvgPicture.asset(
                         'assets/icons/income.svg',
                         width: iconSize,
@@ -44,13 +63,21 @@ class InfoBalance extends StatelessWidget {
                       ),
                     ),
                   ),
-                  const Column(
+                  Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(
+                      const Text(
                         "Income",
                         style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w400,
+                          fontSize: 18,
+                        ),
+                      ),
+                      Text(
+                        formatIncomeAmount(incomeAmount),
+                        style: const TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.w400,
                           fontSize: 15,
@@ -64,7 +91,7 @@ class InfoBalance extends StatelessWidget {
           ),
         ),
         const SizedBox(width: 10),
-                Flexible(
+        Flexible(
           child: Container(
             decoration: BoxDecoration(
               color: const Color(0xFFFD3C4A),
@@ -85,7 +112,7 @@ class InfoBalance extends StatelessWidget {
                       borderRadius: BorderRadius.circular(14),
                     ),
                     child: Padding(
-                      padding: EdgeInsets.all(12), 
+                      padding: EdgeInsets.all(9),
                       child: SvgPicture.asset(
                         'assets/icons/expense.svg',
                         width: iconSize,
@@ -97,13 +124,19 @@ class InfoBalance extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(
-                        "Expenses",
+                      const Text(
+                        "Expense",
                         style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w400,
-                           fontSize: 15
-                        ),
+                            color: Colors.white,
+                            fontWeight: FontWeight.w400,
+                            fontSize: 18),
+                      ),
+                      Text(
+                        formatIncomeAmount(expenseAmount),
+                        style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w400,
+                            fontSize: 15),
                       ),
                     ],
                   )

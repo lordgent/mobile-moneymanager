@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:moneymanager/models/income_exepense_model.dart';
 import 'package:moneymanager/models/transaction_model.dart';
 import 'package:moneymanager/services/balance/balance_info_service.dart';
+import 'package:moneymanager/services/transaction/chart_stick.dart';
+import 'package:moneymanager/services/transaction/total_income_expense_service.dart';
 import 'package:moneymanager/services/transaction/transaction_service.dart';
 import 'package:moneymanager/widgets/bottom_tab.dart';
 import 'package:moneymanager/widgets/info_account.dart';
 import 'package:moneymanager/widgets/info_balance.dart';
+import 'package:moneymanager/widgets/line_chart.dart';
 import 'package:moneymanager/widgets/transaction_card.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -18,8 +22,13 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final balanceInfo = BalanceInfo();
+  var totalIncomeToday = IncomeOrExpense("-", "0");
+  var totalExpenseToday = IncomeOrExpense("-", "0");
+
   Balance? balance;
   late Future<List<TransactionModel>?> transactions;
+  late Future<List<IncomeOrExpense>?> chartStick;
+
   String _permissionStatus = "Unknown";
 
   @override
@@ -28,6 +37,7 @@ class _HomeScreenState extends State<HomeScreen> {
     _fetchBalanceInfo();
     _fetchTransactions();
     _checkPermission();
+    _fetchIncomeOrExpense();
   }
 
   Future<void> _fetchBalanceInfo() async {
@@ -38,13 +48,38 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _fetchTransactions() async {
+    DateFormat dateFormat = DateFormat('ddMMyyyy');
+    DateTime currentDate = DateTime.now();
+    String? startDate;
+    String? endDate;
+    startDate ??= dateFormat.format(currentDate);
+    endDate ??= dateFormat.format(currentDate);
+
     transactions = TransactionService().fetchTransactionService(
-      offset: 0,
-      limit: 10,
-    );
+        offset: 0, limit: 10, startDate: startDate, endDate: endDate);
   }
 
-   Future<void> _checkPermission() async {
+  Future<void> _fetchIncomeOrExpense() async {
+    DateFormat dateFormat = DateFormat('dd-MM-yyyy');
+    DateTime currentDate = DateTime.now();
+    String? startDate;
+    String? endDate;
+    startDate ??= dateFormat.format(currentDate);
+    endDate ??= dateFormat.format(currentDate);
+
+    IncomeOrExpense? a = await TotalExpenseOrIncomeService()
+        .fetchTotalExpenseOrIncomeService(
+            actionName: "Expense", startDate: startDate, endDate: endDate);
+    IncomeOrExpense? b = await TotalExpenseOrIncomeService()
+        .fetchTotalExpenseOrIncomeService(
+            actionName: "Income", startDate: startDate, endDate: endDate);
+    setState(() {
+      totalExpenseToday = a!;
+      totalIncomeToday = b!;
+    });
+  }
+
+  Future<void> _checkPermission() async {
     PermissionStatus status = await Permission.storage.status;
     setState(() {
       _permissionStatus = status.toString();
@@ -86,26 +121,41 @@ class _HomeScreenState extends State<HomeScreen> {
                         fontWeight: FontWeight.w600),
                   ),
             const SizedBox(height: 10),
-            const InfoBalance(),
+            InfoBalance(
+              incomeAmount: totalIncomeToday.total,
+              expenseAmount: totalExpenseToday.total,
+              typeExpense: totalExpenseToday.name,
+              typeIncome: totalIncomeToday.name,
+            ),
             const SizedBox(height: 15),
             Container(
-              height: 120,
               width: double.infinity,
-              child: const Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text("Spend Frequency",
+              child: Container(
+                width: double.infinity,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      "Spend Frequency",
                       style: TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.w500,
-                          fontSize: 17)),
-                ],
+                        color: Color.fromARGB(255, 48, 48, 48),
+                        fontWeight: FontWeight.bold,
+                        fontSize: 17,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Container(
+                      width: double.infinity,
+                      child: TransactionChart(),
+                    ),
+                  ],
+                ),
               ),
             ),
             const SizedBox(height: 15),
             Container(
               width: double.infinity,
-              height: 300,
+              height: 400,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -114,8 +164,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     children: [
                       const Text("Recent Transaction",
                           style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.w500,
+                              color: Color.fromARGB(255, 48, 48, 48),
+                              fontWeight: FontWeight.bold,
                               fontSize: 17)),
                       Container(
                         padding: EdgeInsets.all(4),
@@ -131,44 +181,49 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ],
                   ),
-                  Expanded(
-                    child: FutureBuilder<List<TransactionModel>?>(
-                      future: transactions,
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return const Center(
-                              child: CircularProgressIndicator());
-                        } else if (snapshot.hasError) {
-                          return Center(
-                              child: Text('Error: ${snapshot.error}'));
-                        } else if (snapshot.hasData) {
-                          final transactions = snapshot.data;
+                  Container(
+                    width: double.infinity,
+                    height: 260,
+                    child: SingleChildScrollView(
+                      child: Container(
+                        height: 250,
+                        child: FutureBuilder<List<TransactionModel>?>(
+                          future: transactions,
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return const Center(
+                                  child: CircularProgressIndicator());
+                            } else if (snapshot.hasError) {
+                              return Center(
+                                  child: Text('Error: ${snapshot.error}'));
+                            } else if (snapshot.hasData) {
+                              final transactions = snapshot.data;
 
-                          if (transactions == null || transactions.isEmpty) {
-                            return const Center(
-                                child: Text('No transactions found.'));
-                          }
+                              if (transactions == null ||
+                                  transactions.isEmpty) {
+                                return const Center(
+                                    child: Text('No transactions found.'));
+                              }
 
-                          return ListView.builder(
-                            itemCount: transactions.length,
-                            itemBuilder: (context, index) {
-                              return TransactionCard(
-                                  transaction: transactions[index]);
-                            },
-                          );
-                        } else {
-                          return const Center(
-                              child: Text('No data available.'));
-                        }
-                      },
+                              return ListView.builder(
+                                itemCount: transactions.length,
+                                itemBuilder: (context, index) {
+                                  return TransactionCard(
+                                      transaction: transactions[index]);
+                                },
+                              );
+                            } else {
+                              return const Center(
+                                  child: Text('No data available.'));
+                            }
+                          },
+                        ),
+                      ),
                     ),
                   ),
                 ],
               ),
-            ),
-            const SizedBox(
-              height: 10,
             ),
           ],
         ),

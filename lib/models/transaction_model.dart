@@ -8,6 +8,7 @@ class TransactionModel {
   final User user;
   final Category category;
   final String createdAt;
+  final String typeAction;
 
   TransactionModel({
     required this.id,
@@ -17,6 +18,7 @@ class TransactionModel {
     required this.user,
     required this.category,
     required this.createdAt,
+    required this.typeAction,
   });
 
   factory TransactionModel.fromJson(Map<String, dynamic> json) {
@@ -28,6 +30,7 @@ class TransactionModel {
       user: User.fromJson(json['user']),
       category: Category.fromJson(json['category']),
       createdAt: json['createdAt'],
+      typeAction: json['typeAction']
     );
   }
 
@@ -85,6 +88,34 @@ class Category {
 
   factory Category.fromJson(Map<String, dynamic> json) {
     return Category(
+      id: json['id'],
+      name: json['name'],
+      icon: json['icon'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'icon': icon,
+    };
+  }
+}
+
+class CategoryAction {
+  final String id;
+  final String name;
+  final String icon;
+
+  CategoryAction({
+    required this.id,
+    required this.name,
+    required this.icon,
+  });
+
+  factory CategoryAction.fromJson(Map<String, dynamic> json) {
+    return CategoryAction(
       id: json['id'],
       name: json['name'],
       icon: json['icon'],

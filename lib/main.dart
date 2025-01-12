@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:moneymanager/screens/add_expense_screen.dart';
 import 'package:moneymanager/screens/add_income_screen.dart';
 import 'package:moneymanager/screens/budget_screen.dart';
+import 'package:moneymanager/screens/create_budget_screen.dart';
 import 'package:moneymanager/screens/home_screen.dart';
 import 'package:moneymanager/screens/login_screen.dart';
 import 'package:moneymanager/screens/otp_verification_screen.dart';
@@ -33,11 +34,12 @@ class MyApp extends StatelessWidget {
         '/login': (context) => const LoginScreen(),
         '/register': (context) => const RegisterScreen(),
         '/splash': (context) => const SplashScreen(),
-        '/create-income': (context) => AddIncomeScreen(),
-        '/create-expense': (context) => AddExpenseScreen(),
-        '/verification': (context) => OtpVerificationScreen(),
-        '/budget': (context) => BudgetScreen(),
-        '/welcome': (context) => WelcomeScreen(),
+        '/create-income': (context) => const AddIncomeScreen(),
+        '/create-expense': (context) => const AddExpenseScreen(),
+        '/verification': (context) => const OtpVerificationScreen(),
+        '/budget': (context) => const BudgetScreen(),
+        '/welcome': (context) => const WelcomeScreen(),
+        '/create-budget': (context) => const CreateBudgetScreen()
       },
       onUnknownRoute: (settings) {
         return MaterialPageRoute(builder: (context) => const HomeScreen());

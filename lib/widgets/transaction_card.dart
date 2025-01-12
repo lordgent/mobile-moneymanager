@@ -11,72 +11,80 @@ class TransactionCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      margin: EdgeInsets.only(bottom: 10),
       width: double.infinity,
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(6),
       ),
-      child: Container(
-        child: Row(
-          children: [
-            // Icon Section
-            Container(
-              decoration: BoxDecoration(
-                color: Color.fromARGB(255, 241, 194, 93),
-                borderRadius: BorderRadius.circular(14),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(10.0), // Padding for the icon
-                child: Icon(
-              Icons.category,
-              color: Color.fromARGB(255, 247, 247, 247),
-              size: 28,
-            ),
-              ),
-            ),
-            const SizedBox(width: 10), // Add some space between the icon and text
-
-            // Text and Category Section
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        transaction.category?.name ?? "No category",
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.purple,
-                        ),
-                      ),
-                      Text(
-                        '- Rp${NumberFormat("#,##0", "id_ID").format(double.parse(transaction.total))}',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                          color:  Color.fromARGB(255, 255, 75, 52),
-                        ),
-                      ),
-                    ],
+      child: Row(
+        children: [
+          Container(
+        
+            child:  Container(
+              child: Image.network(
+            width: 45,
+            height: 45,
+            'https://storage-webapps.s3.ap-southeast-3.amazonaws.com/'+ transaction.category.icon,
+            loadingBuilder: (context, child, loadingProgress) {
+              if (loadingProgress == null) {
+                return child;
+              } else {
+                return Center(
+                  child: CircularProgressIndicator(
+                    value: loadingProgress.expectedTotalBytes != null
+                        ? loadingProgress.cumulativeBytesLoaded /
+                            (loadingProgress.expectedTotalBytes ?? 1)
+                        : null,
                   ),
-                  const SizedBox(height: 5), // Space between rows
-                  // Transaction Title
-                  Text(
-                    transaction.title ?? "Untitled",
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black87,
+                );
+              }
+            },
+            errorBuilder: (context, error, stackTrace) {
+              return Center(child: Text('-'));
+            },
+          ),
+            ),
+          ),
+          const SizedBox(width: 10), 
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      transaction.category?.name ?? "No category",
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        color: Color.fromARGB(255, 149, 33, 243),
+                      ),
                     ),
+                    Text(
+                      transaction.typeAction == "Expense" ? "- Rp${NumberFormat("#,##0", "id_ID").format(double.parse(transaction.total))} " : "Rp${NumberFormat("#,##0", "id_ID").format(double.parse(transaction.total))}",
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                        color: transaction.typeAction == 'Expense'? const Color.fromARGB(221, 240, 59, 59) : Color.fromARGB(221, 54, 232, 107),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 5), 
+                Text(
+                  transaction.title ?? "Untitled",
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w400,
+                    color: Colors.black87,
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

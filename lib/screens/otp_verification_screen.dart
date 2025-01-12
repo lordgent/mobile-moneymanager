@@ -16,32 +16,47 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
   final List<TextEditingController> controllers =
       List.generate(4, (index) => TextEditingController());
 
+  bool isButtonDisabled = true;
+  bool isLoading = false;
+
+  void checkOtpValidity() {
+    setState(() {
+      isButtonDisabled =
+          controllers.any((controller) => controller.text.isEmpty);
+    });
+  }
+
   Future<void> sendOtp() async {
     String code = controllers.map((controller) => controller.text).join();
 
     bool success = await service.verificationOtp(code);
+    setState(() {
+      isLoading = true;
+    });
 
     if (success) {
-        CoolAlert.show(
-          context: context,
-          type: CoolAlertType.success,
-          text: MessageGlobal.registerSuccessful,
-        );
-        Future.delayed(Duration(seconds: 2), () {
-          Navigator.pushReplacementNamed(context, '/home');
-        });
-      } else {
-        CoolAlert.show(
-          context: context,
-          type: CoolAlertType.error,
-          text: "otp failed. Please try again.",
-        );
-        Future.delayed(Duration(seconds: 2), () {
-          Navigator.pushReplacementNamed(context, '/verification');
-        });
-      }
+      setState(() {
+        isLoading = false;
+      });
+      CoolAlert.show(
+        context: context,
+        type: CoolAlertType.success,
+        text: MessageGlobal.registerSuccessful,
+      );
+      Future.delayed(Duration(seconds: 2), () {
+        Navigator.pushReplacementNamed(context, '/home');
+      });
+    } else {
+      CoolAlert.show(
+        context: context,
+        type: CoolAlertType.error,
+        text: "OTP failed. Please try again.",
+      );
+      Future.delayed(Duration(seconds: 2), () {
+        Navigator.pushReplacementNamed(context, '/verification');
+      });
+    }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -88,7 +103,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
               ),
             ),
             const Text(
-              "We send verification code to your email",
+              "We sent a verification code to your email",
               style: TextStyle(fontSize: 15),
             ),
             SizedBox(height: 20),
@@ -110,7 +125,8 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                       ),
                     ),
                     onChanged: (value) {
-                      if (value.isNotEmpty && index < 5) {
+                      checkOtpValidity();
+                      if (value.isNotEmpty && index < 3) {
                         FocusScope.of(context).nextFocus();
                       }
                     },
@@ -118,14 +134,16 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                 );
               }),
             ),
-           const SizedBox(height: 20),
-           Container(
+            const SizedBox(height: 20),
+            Container(
               height: 50,
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: sendOtp,
+                onPressed: isLoading ? () {} : sendOtp,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color.fromARGB(255, 149, 33, 243),
+                  backgroundColor: isButtonDisabled
+                      ? const Color.fromARGB(255, 200, 200, 200)
+                      : const Color.fromARGB(255, 149, 33, 243),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(14.0),
                   ),
@@ -137,7 +155,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                         fontWeight: FontWeight.w600)),
               ),
             ),
-           const SizedBox(height: 20),
+            const SizedBox(height: 20),
             const Center(
               child: Text(
                 "I didn’t receive the code? Send again",

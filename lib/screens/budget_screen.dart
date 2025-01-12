@@ -21,7 +21,6 @@ class _BudgetScreenState extends State<BudgetScreen> {
     super.initState();
   }
 
- 
   Future<void> _pickFile() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles();
 
@@ -69,14 +68,15 @@ class _BudgetScreenState extends State<BudgetScreen> {
       body: SingleChildScrollView(
         child: Container(
           width: double.infinity,
-          decoration: const BoxDecoration(color: const Color.fromARGB(255, 149, 33, 243)),
+          decoration:
+              const BoxDecoration(color: Color.fromARGB(255, 123, 73, 241)),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
                 height: screenHeight * 0.2,
                 decoration: const BoxDecoration(
-                  color: const Color.fromARGB(255, 149, 33, 243),
+                  color: const Color.fromARGB(255, 123, 73, 241),
                   borderRadius: BorderRadius.only(
                     bottomLeft: Radius.circular(25),
                     bottomRight: Radius.circular(25),
@@ -84,13 +84,13 @@ class _BudgetScreenState extends State<BudgetScreen> {
                 ),
                 child: Column(
                   children: [
-                   const SizedBox(height: 50),
+                    const SizedBox(height: 50),
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                                                  SizedBox(width: screenWidth * 0.08),
+                          SizedBox(width: screenWidth * 0.08),
                           const Text(
                             "Budget",
                             style: TextStyle(
@@ -107,7 +107,6 @@ class _BudgetScreenState extends State<BudgetScreen> {
                 ),
               ),
               const SizedBox(height: 20),
-          
               Container(
                 height: screenHeight * 0.68,
                 padding: const EdgeInsets.all(12),
@@ -127,9 +126,7 @@ class _BudgetScreenState extends State<BudgetScreen> {
                       child: const Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                                                      
-                        ],
+                        children: [],
                       ),
                     ),
                     Container(
@@ -138,12 +135,15 @@ class _BudgetScreenState extends State<BudgetScreen> {
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           backgroundColor:
-                              const Color.fromARGB(255, 149, 33, 243),
+                              const Color.fromARGB(255, 123, 73, 241),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(15.0),
                           ),
                         ),
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.pushReplacementNamed(
+                              context, '/create-budget');
+                        },
                         child: const Text('Create a budget',
                             style: TextStyle(
                                 color: Colors.white,
