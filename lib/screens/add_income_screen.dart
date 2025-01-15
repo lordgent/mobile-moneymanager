@@ -98,11 +98,14 @@ class _AddIncomeScreenState extends State<AddIncomeScreen> {
     String categoryId = selectedCategory!.id;
     String title = _titleController.text;
     String description = _descriptionController.text;
+    String image = _imageFile != null && _imageFile!.path.isNotEmpty
+        ? _imageFile!.path
+        : '';
 
     bool success = await addIncomeService.AddIncome(
       amount,
       categoryId,
-      _imageFile != null && _imageFile!.path.isNotEmpty ? _imageFile!.path : '',
+      image,
       title,
       description,
       "94985fc2-195f-478f-a182-7dd6a7754ea7",

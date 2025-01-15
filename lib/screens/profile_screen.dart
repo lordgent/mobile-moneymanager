@@ -62,7 +62,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                     borderRadius: BorderRadius.circular(30),
                   ),
-                  child: Icon(Icons.person, color: Colors.white),
+                  child: Icon(Icons.person),
                 ),
                 Container(
                   margin: EdgeInsets.only(left: 16),
@@ -86,7 +86,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
             Container(
               decoration: BoxDecoration(color: Colors.white),
-              width: double.infinity, 
               margin: const EdgeInsets.only(top: 30),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -94,20 +93,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   GestureDetector(
                     onTap: () {},
                     child: Container(
-                      padding: const EdgeInsets.all(10),
-                      width: double.infinity,
+                      padding: const EdgeInsets.all(8),
                       color: Colors.white,
                       child: Row(
                         children: [
-                          Container(
-                            decoration: BoxDecoration(
-                              color: Color.fromARGB(203, 153, 43, 226),
-                              borderRadius: BorderRadius.circular(5),
-                            ),
-                            child: const Padding(
-                              padding: EdgeInsets.all(8.0),
-                              child: Icon(Icons.edit, color: Colors.white),
-                            ),
+                          Image.asset(
+                            "assets/icons/collab.png",
+                            width: 47,
+                            height: 47,
                           ),
                           Container(
                             margin: EdgeInsets.only(left: 15),
@@ -133,16 +126,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       color: Colors.white,
                       child: Row(
                         children: [
-                          Container(
-                            decoration: BoxDecoration(
-                              color: Color.fromARGB(203, 153, 43, 226),
-                              borderRadius: BorderRadius.circular(5),
-                            ),
-                            child: const Padding(
-                              padding: EdgeInsets.all(8.0),
-                              child: Icon(Icons.settings, color: Colors.white),
-                            ),
-                          ),
+                          Image.asset("assets/icons/settings.png"),
                           Container(
                             margin: EdgeInsets.only(left: 15),
                             child: const Text(
@@ -167,16 +151,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       color: Colors.white,
                       child: Row(
                         children: [
-                          Container(
-                            decoration: BoxDecoration(
-                              color: Color.fromARGB(203, 153, 43, 226),
-                              borderRadius: BorderRadius.circular(5),
-                            ),
-                            child: const Padding(
-                              padding: EdgeInsets.all(8.0),
-                              child: Icon(Icons.download, color: Colors.white),
-                            ),
-                          ),
+                          Image.asset("assets/icons/export.png"),
                           Container(
                             margin: EdgeInsets.only(left: 15),
                             child: const Text(
@@ -201,16 +176,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       color: Colors.white,
                       child: Row(
                         children: [
-                          Container(
-                            decoration: BoxDecoration(
-                              color: Color.fromARGB(187, 220, 47, 28),
-                              borderRadius: BorderRadius.circular(5),
-                            ),
-                            child: const Padding(
-                              padding: EdgeInsets.all(8.0),
-                              child: Icon(Icons.logout, color: Colors.white),
-                            ),
-                          ),
+                          Image.asset("assets/icons/logout.png"),
                           Container(
                             margin: EdgeInsets.only(left: 15),
                             child: const Text(

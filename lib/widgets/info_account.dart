@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:moneymanager/widgets/date_picker.dart';
 
 class InfoAccount extends StatefulWidget {
   const InfoAccount({super.key});
@@ -28,7 +29,7 @@ class _InfoAccountState extends State<InfoAccount> {
   @override
   void initState() {
     super.initState();
-    int currentMonthIndex = DateTime.now().month - 1; 
+    int currentMonthIndex = DateTime.now().month - 1;
     selected = monthList[currentMonthIndex];
   }
 
@@ -49,31 +50,14 @@ class _InfoAccountState extends State<InfoAccount> {
           ),
           child: Icon(Icons.person, color: Colors.white),
         ),
-        DropdownButton<String>(
-          hint: Text("Choose a month"),
-          value: selected,
-          onChanged: (String? newValue) {
-            setState(() {
-              selected = newValue!;
-            });
-          },
-          items: monthList.map<DropdownMenuItem<String>>((String bulan) {
-            return DropdownMenuItem<String>(
-              value: bulan,
-              child: Container(
-                child:Text(bulan,style: TextStyle(fontSize: 20),textAlign: TextAlign.center)
-              ),
-            );
-          }).toList(),
-          icon: null,  
-        ),
+        DatePickerWidget(),
         Container(
           width: 45,
           height: 45,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
           ),
-          child:  Container(
+          child: Container(
             child: const Icon(
               Icons.notifications,
               color: Color.fromARGB(255, 153, 43, 226),

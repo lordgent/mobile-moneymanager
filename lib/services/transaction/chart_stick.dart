@@ -3,7 +3,6 @@ import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:moneymanager/models/chart_income_expense.dart';
-import 'package:moneymanager/models/income_exepense_model.dart';
 
 class ChartStickExpenseOrIncome {
   final FlutterSecureStorage _storage = FlutterSecureStorage();
@@ -28,8 +27,6 @@ class ChartStickExpenseOrIncome {
       'startDate': startDate,
       'endDate': endDate,
     };
-
-    print('Request body Income Expense: $body');
 
     try {
       final token = await _getToken();

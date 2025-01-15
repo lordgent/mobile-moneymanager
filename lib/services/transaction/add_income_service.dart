@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'dart:io'; // Tambahkan import ini
+import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
@@ -19,16 +19,13 @@ class AddIncomeService {
     try {
       String? imageBase64 = await _encodeImage(imagePath);
       if (imageBase64 == null) {
-        print('Error encoding image');
         return false;
       }
 
       final token = await _getToken();
       if (token == null) {
-        print('No token found');
         return false;
       }
-      print("$categoryId categoryId");
 
       final response = await http.post(
         Uri.parse(url),
@@ -53,15 +50,12 @@ class AddIncomeService {
         if (responseData != null && responseData['data'] != null) {
           return true;
         } else {
-          print('Invalid response data');
           return false;
         }
       } else {
-        print('Request failed with status: ${response.statusCode}');
         return false;
       }
     } catch (e) {
-      print('Error occurred: $e');
       return false;
     }
   }
@@ -80,7 +74,6 @@ class AddIncomeService {
 
   Future<String?> _encodeImage(String imagePath) async {
     try {
-      // Membaca file lokal dari path
       final file = File(imagePath);
       final bytes = await file.readAsBytes();
 
@@ -92,10 +85,9 @@ class AddIncomeService {
           base64Image = base64Image.substring(index + 8);
         }
       }
-      print("$base64Image");
+
       return base64Image;
     } catch (e) {
-      print('Error encoding image: $e');
       return null;
     }
   }

@@ -5,6 +5,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:moneymanager/models/categories_model.dart';
 import 'package:moneymanager/services/categories/list_category_service.dart';
 import 'package:moneymanager/widgets/bottom_tab.dart';
+import 'package:moneymanager/widgets/status_payment.dart';
 
 class BudgetScreen extends StatefulWidget {
   const BudgetScreen({super.key});
@@ -15,10 +16,16 @@ class BudgetScreen extends StatefulWidget {
 
 class _BudgetScreenState extends State<BudgetScreen> {
   String? _fileName;
+  bool statusPayment = false;
 
   @override
   void initState() {
     super.initState();
+  }
+
+  void _showInitTransactionModal(BuildContext context) {
+    print("object");
+    ;
   }
 
   Future<void> _pickFile() async {
@@ -66,97 +73,99 @@ class _BudgetScreenState extends State<BudgetScreen> {
 
     return Scaffold(
       body: SingleChildScrollView(
-        child: Container(
-          width: double.infinity,
-          decoration:
-              const BoxDecoration(color: Color.fromARGB(255, 123, 73, 241)),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                height: screenHeight * 0.2,
-                decoration: const BoxDecoration(
-                  color: const Color.fromARGB(255, 123, 73, 241),
-                  borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(25),
-                    bottomRight: Radius.circular(25),
-                  ),
-                ),
+        child: statusPayment
+            ? Container(
+                width: double.infinity,
+                decoration:
+                    BoxDecoration(color: Color.fromARGB(255, 123, 73, 241)),
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const SizedBox(height: 50),
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      height: screenHeight * 0.2,
+                      decoration: const BoxDecoration(
+                        color: const Color.fromARGB(255, 123, 73, 241),
+                        borderRadius: BorderRadius.only(
+                          bottomLeft: Radius.circular(25),
+                          bottomRight: Radius.circular(25),
+                        ),
+                      ),
+                      child: Column(
                         children: [
-                          SizedBox(width: screenWidth * 0.08),
-                          const Text(
-                            "Budget",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 20,
-                              fontWeight: FontWeight.w400,
+                          const SizedBox(height: 50),
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                SizedBox(width: screenWidth * 0.08),
+                                const Text(
+                                  "Budget",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                ),
+                                SizedBox(width: screenWidth * 0.08),
+                              ],
                             ),
                           ),
-                          SizedBox(width: screenWidth * 0.08),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    Container(
+                      height: screenHeight * 0.68,
+                      padding: const EdgeInsets.all(12),
+                      width: double.infinity,
+                      decoration: const BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(25),
+                          topRight: Radius.circular(25),
+                        ),
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
+                            height: screenHeight * 0.4,
+                            child: const Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [],
+                            ),
+                          ),
+                          Container(
+                            width: double.infinity,
+                            height: 60,
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor:
+                                    const Color.fromARGB(255, 123, 73, 241),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(15.0),
+                                ),
+                              ),
+                              onPressed: () {
+                                Navigator.pushReplacementNamed(
+                                    context, '/create-budget');
+                              },
+                              child: const Text('Create a budget',
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w600)),
+                            ),
+                          ),
                         ],
                       ),
                     ),
                   ],
                 ),
-              ),
-              const SizedBox(height: 20),
-              Container(
-                height: screenHeight * 0.68,
-                padding: const EdgeInsets.all(12),
-                width: double.infinity,
-                decoration: const BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(25),
-                    topRight: Radius.circular(25),
-                  ),
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Container(
-                      height: screenHeight * 0.4,
-                      child: const Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [],
-                      ),
-                    ),
-                    Container(
-                      width: double.infinity,
-                      height: 60,
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor:
-                              const Color.fromARGB(255, 123, 73, 241),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15.0),
-                          ),
-                        ),
-                        onPressed: () {
-                          Navigator.pushReplacementNamed(
-                              context, '/create-budget');
-                        },
-                        child: const Text('Create a budget',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 18,
-                                fontWeight: FontWeight.w600)),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
+              )
+            : StatusPayment(),
       ),
       bottomNavigationBar: BottomTab(),
     );
