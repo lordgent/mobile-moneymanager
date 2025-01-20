@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:intl/intl.dart';
 import 'package:moneymanager/models/payment_detail_model.dart';
 import 'package:moneymanager/services/payment/payment_detail_service.dart';
@@ -14,6 +13,8 @@ class TransactionDetail extends StatefulWidget {
 
 class _TransactionDetailState extends State<TransactionDetail> {
   PaymentData? data;
+  final FlutterSecureStorage _secureStorage = const FlutterSecureStorage();
+
   final PaymentDetailService service = PaymentDetailService();
   @override
   void initState() {
@@ -50,7 +51,8 @@ class _TransactionDetailState extends State<TransactionDetail> {
         title: Text('Detail Pembayaran'),
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
-          onPressed: () {
+          onPressed: () async {
+            await _secureStorage.write(key: 'selectedIndex', value: "0");
             Navigator.pushReplacementNamed(context, '/home');
           },
         ),

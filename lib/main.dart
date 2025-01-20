@@ -3,6 +3,7 @@ import 'package:moneymanager/screens/add_expense_screen.dart';
 import 'package:moneymanager/screens/add_income_screen.dart';
 import 'package:moneymanager/screens/budget_screen.dart';
 import 'package:moneymanager/screens/create_budget_screen.dart';
+import 'package:moneymanager/screens/financial_report_screen.dart';
 import 'package:moneymanager/screens/history_subscription.dart';
 import 'package:moneymanager/screens/home_screen.dart';
 import 'package:moneymanager/screens/login_screen.dart';
@@ -43,7 +44,8 @@ class MyApp extends StatelessWidget {
         '/welcome': (context) => const WelcomeScreen(),
         '/create-budget': (context) => const CreateBudgetScreen(),
         '/nextPayment': (context) => const NextPayment(),
-        '/history-subscription': (context) => const HistorySubscription()
+        '/history-subscription': (context) => const HistorySubscription(),
+        '/financial-report': (context) => FinancialReportScreen()
       },
       onUnknownRoute: (settings) {
         return MaterialPageRoute(builder: (context) => const HomeScreen());

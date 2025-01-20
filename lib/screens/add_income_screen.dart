@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -121,6 +120,7 @@ class _AddIncomeScreenState extends State<AddIncomeScreen> {
         type: CoolAlertType.success,
         text: "Success",
       );
+
       Future.delayed(Duration(seconds: 2), () {
         Navigator.pushReplacementNamed(context, '/home');
       });

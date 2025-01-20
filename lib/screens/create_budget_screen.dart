@@ -1,9 +1,6 @@
-import 'dart:convert';
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:moneymanager/models/categories_model.dart';
 import 'package:moneymanager/services/categories/list_category_service.dart';
 import 'package:moneymanager/services/transaction/add_income_service.dart';
@@ -79,7 +76,6 @@ class _CreateBudgetScreenState extends State<CreateBudgetScreen> {
 
     String amount = _amountController.text;
     String categoryId = selectedCategory!.id;
-
     String categoryAction = "Income";
 
     bool success = true;

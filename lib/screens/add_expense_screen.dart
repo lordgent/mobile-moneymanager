@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -7,8 +6,8 @@ import 'package:file_picker/file_picker.dart';
 import 'package:moneymanager/models/categories_model.dart';
 import 'package:moneymanager/services/categories/list_category_service.dart';
 import 'package:moneymanager/services/transaction/add_expense_service.dart';
-import 'package:moneymanager/services/transaction/add_income_service.dart'; // Import AddIncomeService
 import 'package:cool_alert/cool_alert.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class AddExpenseScreen extends StatefulWidget {
   const AddExpenseScreen({super.key});
@@ -28,6 +27,7 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
   final TextEditingController _amountController = TextEditingController();
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
+  final FlutterSecureStorage _secureStorage = const FlutterSecureStorage();
 
   final AddExpenseService addeAddExpenseService = AddExpenseService();
 
@@ -96,6 +96,10 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
       return;
     }
 
+    void _saveSelectedIndex(int index) async {
+      await _secureStorage.write(key: 'selectedIndex', value: index.toString());
+    }
+
     String amount = _amountController.text;
     String categoryId = selectedCategory!.id;
     String title = _titleController.text;
@@ -123,6 +127,8 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
         type: CoolAlertType.success,
         text: "Expense added successfully",
       );
+      await _secureStorage.write(key: 'selectedIndex', value: "0");
+
       Future.delayed(Duration(seconds: 2), () {
         Navigator.pushReplacementNamed(context, '/home');
       });
@@ -167,7 +173,9 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           GestureDetector(
-                            onTap: () {
+                            onTap: () async {
+                              await _secureStorage.write(
+                                  key: 'selectedIndex', value: "0");
                               Navigator.pushReplacementNamed(context, "/home");
                             },
                             child: Icon(

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:moneymanager/models/chart_income_expense.dart';
 import 'package:moneymanager/services/transaction/chart_stick.dart';
-import 'package:intl/intl.dart'; // Import intl package
 
 class TransactionChart extends StatefulWidget {
   @override
@@ -54,9 +53,9 @@ class _TransactionChartState extends State<TransactionChart> {
               width: double.infinity,
               child: BarChart(
                 BarChartData(
-                  maxY: maxHeight, // Menetapkan tinggi maksimum sumbu Y
+                  maxY: maxHeight,
                   gridData: FlGridData(
-                    show: false, // Menonaktifkan grid
+                    show: false,
                     getDrawingHorizontalLine: (value) {
                       return FlLine(
                         color: Colors.grey.withOpacity(0.3),

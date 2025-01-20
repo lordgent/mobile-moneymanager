@@ -1,7 +1,4 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:moneymanager/models/transaction_model.dart';
 import 'package:moneymanager/services/transaction/transaction_service.dart';
 import 'package:moneymanager/widgets/bottom_tab.dart';
@@ -77,10 +74,10 @@ class _TransactionScreenState extends State<TransactionScreen> {
       backgroundColor: Colors.transparent,
       builder: (BuildContext context) {
         return Container(
-          padding: EdgeInsets.all(12),
+          padding: const EdgeInsets.all(12),
           width: double.infinity,
           height: 400,
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.only(
                 topRight: Radius.circular(20), topLeft: Radius.circular(20)),
@@ -187,145 +184,180 @@ class _TransactionScreenState extends State<TransactionScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        width: double.infinity,
-        height: double.infinity,
-        padding: EdgeInsets.all(12),
-        child: Column(
-          children: [
-            SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                DropdownButton<String>(
-                  hint: Text("Choose a month"),
-                  value: selected,
-                  onChanged: (String? newValue) {
-                    setState(() {
-                      selected = newValue;
-                    });
-                  },
-                  items:
-                      monthList.map<DropdownMenuItem<String>>((String bulan) {
-                    return DropdownMenuItem<String>(
-                      value: bulan,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 10),
-                        child: Center(
-                          child: Text(
-                            bulan,
-                            style: TextStyle(fontSize: 20),
-                            textAlign: TextAlign.center,
+      body: SingleChildScrollView(
+          child: Container(
+              width: double.infinity,
+              padding: EdgeInsets.all(12),
+              child: Column(
+                children: [
+                  SizedBox(height: 20),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      DropdownButton<String>(
+                        hint: Text("Choose a month"),
+                        value: selected,
+                        onChanged: (String? newValue) {
+                          setState(() {
+                            selected = newValue;
+                          });
+                        },
+                        items: monthList
+                            .map<DropdownMenuItem<String>>((String bulan) {
+                          return DropdownMenuItem<String>(
+                            value: bulan,
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 10),
+                              child: Center(
+                                child: Text(
+                                  bulan,
+                                  style: TextStyle(fontSize: 20),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                            ),
+                          );
+                        }).toList(),
+                        icon: null,
+                        underline: SizedBox(),
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          _showFixedModal(context);
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(14),
+                          ),
+                          child: Padding(
+                            padding: EdgeInsets.all(10.0),
+                            child: SvgPicture.asset(
+                              'assets/icons/dropdown.svg',
+                              width: 35.0,
+                              height: 35.0,
+                            ),
                           ),
                         ),
                       ),
-                    );
-                  }).toList(),
-                  icon: null,
-                  underline: SizedBox(),
-                ),
-                GestureDetector(
-                  onTap: () {
-                    _showFixedModal(context);
-                  },
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(14),
-                    ),
-                    child: Padding(
-                      padding: EdgeInsets.all(10.0),
-                      child: SvgPicture.asset(
-                        'assets/icons/dropdown.svg',
-                        width: 35.0,
-                        height: 35.0,
+                    ],
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.pushReplacementNamed(
+                          context, '/financial-report');
+                    },
+                    child: Container(
+                      padding: EdgeInsets.all(6),
+                      decoration: BoxDecoration(
+                          color: Color.fromARGB(255, 242, 221, 253),
+                          borderRadius: BorderRadius.all(Radius.circular(6))),
+                      width: double.infinity,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text("See your financial report",
+                              style: TextStyle(color: Colors.purple)),
+                          Icon(
+                            Icons.arrow_right,
+                            color: Colors.purple,
+                          )
+                        ],
                       ),
                     ),
                   ),
-                ),
-              ],
-            ),
-            const Text(
-              "Hari ini",
-              textAlign: TextAlign.start,
-            ),
-            Container(
-              width: double.infinity,
-              height: 260,
-              child: SingleChildScrollView(
-                child: Container(
-                  height: 250,
-                  child: FutureBuilder<List<TransactionModel>?>(
-                    future: transactions,
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const Center(child: CircularProgressIndicator());
-                      } else if (snapshot.hasError) {
-                        return Center(child: Text('Error: ${snapshot.error}'));
-                      } else if (snapshot.hasData) {
-                        final transactions = snapshot.data;
-
-                        if (transactions == null || transactions.isEmpty) {
-                          return const Center(
-                              child: Text('No transactions found.'));
-                        }
-
-                        return ListView.builder(
-                          itemCount: transactions.length,
-                          itemBuilder: (context, index) {
-                            return TransactionCard(
-                                transaction: transactions[index]);
-                          },
-                        );
-                      } else {
-                        return const Center(child: Text('No data available.'));
-                      }
-                    },
+                  SizedBox(
+                    height: 15,
                   ),
-                ),
-              ),
-            ),
-            Text("Kemarin"),
-            Container(
-              width: double.infinity,
-              height: 260,
-              child: SingleChildScrollView(
-                child: Container(
-                  height: 250,
-                  child: FutureBuilder<List<TransactionModel>?>(
-                    future: transactionYesterday,
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const Center(child: CircularProgressIndicator());
-                      } else if (snapshot.hasError) {
-                        return Center(child: Text('Error: ${snapshot.error}'));
-                      } else if (snapshot.hasData) {
-                        final transactionYesterday = snapshot.data;
-
-                        if (transactionYesterday == null ||
-                            transactionYesterday.isEmpty) {
-                          return const Center(
-                              child: Text('No transactions found.'));
-                        }
-
-                        return ListView.builder(
-                          itemCount: transactionYesterday.length,
-                          itemBuilder: (context, index) {
-                            return TransactionCard(
-                                transaction: transactionYesterday[index]);
-                          },
-                        );
-                      } else {
-                        return const Center(child: Text('No data available.'));
-                      }
-                    },
+                  const Text(
+                    "Hari ini",
+                    textAlign: TextAlign.start,
                   ),
-                ),
-              ),
-            )
-          ],
-        ),
-      ),
+                  Container(
+                    width: double.infinity,
+                    height: 260,
+                    child: SingleChildScrollView(
+                      child: Container(
+                        height: 250,
+                        child: FutureBuilder<List<TransactionModel>?>(
+                          future: transactions,
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return const Center(
+                                  child: CircularProgressIndicator());
+                            } else if (snapshot.hasError) {
+                              return Center(
+                                  child: Text('Error: ${snapshot.error}'));
+                            } else if (snapshot.hasData) {
+                              final transactions = snapshot.data;
+
+                              if (transactions == null ||
+                                  transactions.isEmpty) {
+                                return const Center(
+                                    child: Text('No transactions found.'));
+                              }
+
+                              return ListView.builder(
+                                itemCount: transactions.length,
+                                itemBuilder: (context, index) {
+                                  return TransactionCard(
+                                      transaction: transactions[index]);
+                                },
+                              );
+                            } else {
+                              return const Center(
+                                  child: Text('No data available.'));
+                            }
+                          },
+                        ),
+                      ),
+                    ),
+                  ),
+                  Text("Kemarin"),
+                  Container(
+                    width: double.infinity,
+                    height: 250,
+                    child: SingleChildScrollView(
+                      child: Container(
+                        height: 240,
+                        child: FutureBuilder<List<TransactionModel>?>(
+                          future: transactionYesterday,
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return const Center(
+                                  child: CircularProgressIndicator());
+                            } else if (snapshot.hasError) {
+                              return Center(
+                                  child: Text('Error: ${snapshot.error}'));
+                            } else if (snapshot.hasData) {
+                              final transactionYesterday = snapshot.data;
+
+                              if (transactionYesterday == null ||
+                                  transactionYesterday.isEmpty) {
+                                return const Center(
+                                    child: Text('No transactions found.'));
+                              }
+
+                              return ListView.builder(
+                                itemCount: transactionYesterday.length,
+                                itemBuilder: (context, index) {
+                                  return TransactionCard(
+                                      transaction: transactionYesterday[index]);
+                                },
+                              );
+                            } else {
+                              return const Center(
+                                  child: Text('No data available.'));
+                            }
+                          },
+                        ),
+                      ),
+                    ),
+                  )
+                ],
+              ))),
       bottomNavigationBar: BottomTab(),
     );
   }

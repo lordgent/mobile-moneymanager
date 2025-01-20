@@ -16,9 +16,8 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    _checkPermission(); // Memeriksa izin saat aplikasi dimulai
+    _checkPermission();
 
-    // Simulasi pengecekan autentikasi setelah 2 detik
     Future.delayed(Duration(seconds: 2), () async {
       bool isAuthenticated = await authService.isAuthenticated();
       print("is auth $isAuthenticated ");
@@ -54,9 +53,9 @@ class _SplashScreenState extends State<SplashScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Permission Denied'),
-          content:
-              Text('The app needs storage permission to function properly.'),
+          title: const Text('Permission Denied'),
+          content: const Text(
+              'The app needs storage permission to function properly.'),
           actions: <Widget>[
             TextButton(
               onPressed: () {
@@ -66,7 +65,7 @@ class _SplashScreenState extends State<SplashScreen> {
             ),
             TextButton(
               onPressed: () async {
-                await openAppSettings(); // Arahkan pengguna ke pengaturan aplikasi untuk memberikan izin
+                await openAppSettings();
                 Navigator.of(context).pop();
               },
               child: Text('Open Settings'),
@@ -87,7 +86,7 @@ class _SplashScreenState extends State<SplashScreen> {
           decoration: BoxDecoration(
             color: Color.fromARGB(255, 149, 33, 243),
           ),
-          child: Center(
+          child: const Center(
             child: SizedBox(
               width: 60,
               height: 60,

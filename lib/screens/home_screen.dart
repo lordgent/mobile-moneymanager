@@ -3,7 +3,6 @@ import 'package:intl/intl.dart';
 import 'package:moneymanager/models/income_exepense_model.dart';
 import 'package:moneymanager/models/transaction_model.dart';
 import 'package:moneymanager/services/balance/balance_info_service.dart';
-import 'package:moneymanager/services/transaction/chart_stick.dart';
 import 'package:moneymanager/services/transaction/total_income_expense_service.dart';
 import 'package:moneymanager/services/transaction/transaction_service.dart';
 import 'package:moneymanager/widgets/bottom_tab.dart';
@@ -167,17 +166,23 @@ class _HomeScreenState extends State<HomeScreen> {
                               color: Color.fromARGB(255, 48, 48, 48),
                               fontWeight: FontWeight.bold,
                               fontSize: 17)),
-                      Container(
-                        padding: EdgeInsets.all(4),
-                        decoration: BoxDecoration(
-                          color: Color.fromARGB(255, 249, 233, 252),
-                          borderRadius: BorderRadius.circular(10),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.pushReplacementNamed(
+                              context, '/transaction');
+                        },
+                        child: Container(
+                          padding: EdgeInsets.all(4),
+                          decoration: BoxDecoration(
+                            color: Color.fromARGB(255, 249, 233, 252),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: const Text("See All",
+                              style: TextStyle(
+                                  color: Color.fromARGB(255, 184, 70, 245),
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 15)),
                         ),
-                        child: const Text("See All",
-                            style: TextStyle(
-                                color: Color.fromARGB(255, 184, 70, 245),
-                                fontWeight: FontWeight.w400,
-                                fontSize: 15)),
                       ),
                     ],
                   ),

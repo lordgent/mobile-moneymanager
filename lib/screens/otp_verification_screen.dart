@@ -27,24 +27,24 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
   }
 
   Future<void> sendOtp() async {
+    if (isLoading) return;
+
     String code = controllers.map((controller) => controller.text).join();
 
-    bool success = await service.verificationOtp(code);
     setState(() {
       isLoading = true;
     });
 
+    bool success = await service.verificationOtp(code);
+
     if (success) {
-      setState(() {
-        isLoading = false;
-      });
       CoolAlert.show(
         context: context,
         type: CoolAlertType.success,
         text: MessageGlobal.registerSuccessful,
       );
       Future.delayed(Duration(seconds: 2), () {
-        Navigator.pushReplacementNamed(context, '/home');
+        Navigator.pushReplacementNamed(context, '/login');
       });
     } else {
       CoolAlert.show(
@@ -56,6 +56,10 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
         Navigator.pushReplacementNamed(context, '/verification');
       });
     }
+
+    setState(() {
+      isLoading = false;
+    });
   }
 
   @override
@@ -139,7 +143,8 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
               height: 50,
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: isLoading ? () {} : sendOtp,
+                onPressed:
+                    isLoading ? null : sendOtp, // Disable button when loading
                 style: ElevatedButton.styleFrom(
                   backgroundColor: isButtonDisabled
                       ? const Color.fromARGB(255, 200, 200, 200)
@@ -148,11 +153,15 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                     borderRadius: BorderRadius.circular(14.0),
                   ),
                 ),
-                child: const Text('Verify',
-                    style: TextStyle(
+                child: isLoading
+                    ? const CircularProgressIndicator(
                         color: Colors.white,
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600)),
+                      )
+                    : const Text('Verify',
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600)),
               ),
             ),
             const SizedBox(height: 20),
