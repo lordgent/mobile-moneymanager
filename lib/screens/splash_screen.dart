@@ -16,6 +16,9 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
+    _checkPermission(); // Memeriksa izin saat aplikasi dimulai
+
+    // Simulasi pengecekan autentikasi setelah 2 detik
     Future.delayed(Duration(seconds: 2), () async {
       bool isAuthenticated = await authService.isAuthenticated();
       print("is auth $isAuthenticated ");
@@ -25,14 +28,53 @@ class _SplashScreenState extends State<SplashScreen> {
         Navigator.pushReplacementNamed(context, '/welcome');
       }
     });
-    _checkPermission();
   }
 
   Future<void> _checkPermission() async {
     PermissionStatus status = await Permission.storage.status;
-    setState(() {
-      _permissionStatus = status.toString();
-    });
+
+    if (!status.isGranted) {
+      PermissionStatus newStatus = await Permission.storage.request();
+      setState(() {
+        _permissionStatus = newStatus.toString();
+      });
+
+      if (newStatus.isDenied) {
+        _showPermissionDeniedDialog();
+      }
+    } else {
+      setState(() {
+        _permissionStatus = status.toString();
+      });
+    }
+  }
+
+  void _showPermissionDeniedDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Permission Denied'),
+          content:
+              Text('The app needs storage permission to function properly.'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('OK'),
+            ),
+            TextButton(
+              onPressed: () async {
+                await openAppSettings(); // Arahkan pengguna ke pengaturan aplikasi untuk memberikan izin
+                Navigator.of(context).pop();
+              },
+              child: Text('Open Settings'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override

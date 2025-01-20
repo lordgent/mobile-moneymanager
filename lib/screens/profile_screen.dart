@@ -105,7 +105,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           Container(
                             margin: EdgeInsets.only(left: 15),
                             child: const Text(
-                              "Edit Profile",
+                              "Subscription",
                               style: TextStyle(
                                   color: Color.fromARGB(255, 62, 62, 62),
                                   fontWeight: FontWeight.w400,

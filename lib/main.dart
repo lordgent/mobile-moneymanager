@@ -3,8 +3,10 @@ import 'package:moneymanager/screens/add_expense_screen.dart';
 import 'package:moneymanager/screens/add_income_screen.dart';
 import 'package:moneymanager/screens/budget_screen.dart';
 import 'package:moneymanager/screens/create_budget_screen.dart';
+import 'package:moneymanager/screens/history_subscription.dart';
 import 'package:moneymanager/screens/home_screen.dart';
 import 'package:moneymanager/screens/login_screen.dart';
+import 'package:moneymanager/screens/next_transcation.dart';
 import 'package:moneymanager/screens/otp_verification_screen.dart';
 import 'package:moneymanager/screens/profile_screen.dart';
 import 'package:moneymanager/screens/register_screen.dart';
@@ -39,7 +41,9 @@ class MyApp extends StatelessWidget {
         '/verification': (context) => const OtpVerificationScreen(),
         '/budget': (context) => const BudgetScreen(),
         '/welcome': (context) => const WelcomeScreen(),
-        '/create-budget': (context) => const CreateBudgetScreen()
+        '/create-budget': (context) => const CreateBudgetScreen(),
+        '/nextPayment': (context) => const NextPayment(),
+        '/history-subscription': (context) => const HistorySubscription()
       },
       onUnknownRoute: (settings) {
         return MaterialPageRoute(builder: (context) => const HomeScreen());
