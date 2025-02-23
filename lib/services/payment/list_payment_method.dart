@@ -14,7 +14,7 @@ class PaymentMethodService {
 
   // Fetch list of payment methods
   Future<PaymentMethodsResponse?> fetchListPayment() async {
-    final url = 'http://108.136.230.98:8080/api/v1/user/payment-method';
+    final url = 'http://185.170.198.166:8080/api/v1/user/payment-method';
 
     try {
       final token = await _getToken();

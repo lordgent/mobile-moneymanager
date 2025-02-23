@@ -12,7 +12,7 @@ class ReportCategoryService {
   }
 
   Future<ReportCategoryModel?> fetchCategoryReport() async {
-    const url = 'http://108.136.230.98:8080/api/v1/user/financial/reports';
+    const url = 'http://185.170.198.166:8080/api/v1/user/financial/reports';
 
     try {
       final token = await _getToken();

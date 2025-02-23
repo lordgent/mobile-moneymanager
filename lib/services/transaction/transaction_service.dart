@@ -18,7 +18,7 @@ class TransactionService {
     String? startDate,
     String? endDate,
   }) async {
-    const url = 'http://108.136.230.98:8080/api/v1/user/transactions';
+    const url = 'http://185.170.198.166:8080/api/v1/user/transactions';
 
     DateFormat dateFormat = DateFormat('ddMMyyyy');
 
@@ -51,6 +51,13 @@ class TransactionService {
         body: json.encode(body),
       );
 
+      print(response);
+
+      print("Fetching transactions with parameters:");
+      print("Offset: $offset");
+      print("Limit: $limit");
+      print("Start Date: $startDate");
+      print("End Date: $endDate");
       if (response.statusCode == 200) {
         var responseData = json.decode(response.body);
         if (responseData != null && responseData['data'] != null) {
@@ -58,6 +65,7 @@ class TransactionService {
           for (var transactionData in responseData['data']['data']) {
             transactions.add(TransactionModel.fromJson(transactionData));
           }
+          print(transactions);
           return transactions;
         } else {
           return null;

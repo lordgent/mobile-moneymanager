@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:moneymanager/models/payment_detail_model.dart';
+import 'package:moneymanager/providers/transactions/transaction_controller.dart';
 import 'package:moneymanager/services/payment/payment_detail_service.dart';
 
 import 'package:moneymanager/widgets/bottom_tab.dart';
@@ -20,6 +22,7 @@ class _BudgetScreenState extends State<BudgetScreen> {
   String? _fileName;
   bool statusPayment = false;
   List transactionDetail = [];
+  final TransactionController controller = Get.put(TransactionController());
 
   @override
   void initState() {
@@ -98,7 +101,6 @@ class _BudgetScreenState extends State<BudgetScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Header section
                       Container(
                         height: screenHeight * 0.2,
                         decoration: const BoxDecoration(
@@ -135,7 +137,6 @@ class _BudgetScreenState extends State<BudgetScreen> {
                         ),
                       ),
                       const SizedBox(height: 20),
-                      // Main content section
                       Container(
                         height: screenHeight * 0.68,
                         padding: const EdgeInsets.all(12),
@@ -159,7 +160,6 @@ class _BudgetScreenState extends State<BudgetScreen> {
                                 children: [],
                               ),
                             ),
-                            // Button to create a new budget
                             Container(
                               width: double.infinity,
                               height: 60,
@@ -193,10 +193,10 @@ class _BudgetScreenState extends State<BudgetScreen> {
                 ),
               )
             : (data != null && data?.status != "SUCCESS"
-                ? TransactionDetail()
-                : StatusPayment()),
+                ? const TransactionDetail()
+                : const StatusPayment()),
       ),
-      bottomNavigationBar: BottomTab(),
+      bottomNavigationBar: const BottomTab(),
     );
   }
 }

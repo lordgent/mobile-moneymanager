@@ -13,7 +13,7 @@ class SubscriptionCreateService {
 
   Future<CreatePaymentResponse?> createSubscription(
       String subscriptionID, String paymentMethod) async {
-    final url = 'http://108.136.230.98:8080/api/v1/user/payment';
+    final url = 'http://185.170.198.166:8080/api/v1/user/payment';
 
     try {
       final token = await _getToken();

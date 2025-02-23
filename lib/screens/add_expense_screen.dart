@@ -1,9 +1,11 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:moneymanager/models/categories_model.dart';
+import 'package:moneymanager/providers/transactions/transaction_controller.dart';
 import 'package:moneymanager/services/categories/list_category_service.dart';
 import 'package:moneymanager/services/transaction/add_expense_service.dart';
 import 'package:cool_alert/cool_alert.dart';
@@ -28,6 +30,7 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
   final FlutterSecureStorage _secureStorage = const FlutterSecureStorage();
+  final TransactionController controller = Get.put(TransactionController());
 
   final AddExpenseService addeAddExpenseService = AddExpenseService();
 
@@ -128,6 +131,7 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
         text: "Expense added successfully",
       );
       await _secureStorage.write(key: 'selectedIndex', value: "0");
+      await controller.refreshData(rangeType: "now");
 
       Future.delayed(Duration(seconds: 2), () {
         Navigator.pushReplacementNamed(context, '/home');

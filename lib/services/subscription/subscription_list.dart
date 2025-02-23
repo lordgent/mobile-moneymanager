@@ -12,7 +12,7 @@ class SubscriptionListService {
   }
 
   Future<List<SubscriptionModel>?> fetchListSubscription() async {
-    final url = 'http://108.136.230.98:8080/api/v1/user/subscriptions';
+    final url = 'http://185.170.198.166:8080/api/v1/user/subscriptions';
 
     try {
       final token = await _getToken();

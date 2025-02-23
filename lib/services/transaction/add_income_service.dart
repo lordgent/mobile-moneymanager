@@ -14,7 +14,7 @@ class AddIncomeService {
 
   Future<bool> AddIncome(String amount, String categoryId, String imagePath,
       String title, String description, String categoryAction) async {
-    const url = 'http://108.136.230.98:8080/api/v1/user/transaction/history';
+    const url = 'http://185.170.198.166:8080/api/v1/user/transaction/history';
 
     try {
       String? imageBase64 = await _encodeImage(imagePath);

@@ -13,7 +13,7 @@ class PaymentDetailService {
   }
 
   Future<PaymentData?> fetchPaymentDetailInfo() async {
-    const url = 'http://108.136.230.98:8080/api/v1/user/payment-detail';
+    const url = 'http://185.170.198.166:8080/api/v1/user/payment-detail';
     try {
       final token = await _getToken();
       if (token == null) {

@@ -12,7 +12,8 @@ class CategoriesService {
   }
 
   Future<List<CategoriesModel>?> fetchCategories(String typeCategory) async {
-    final url = 'http://108.136.230.98:8080/api/v1/user/categories/$typeCategory';
+    final url =
+        'http://185.170.198.166:8080/api/v1/user/categories/$typeCategory';
 
     try {
       final token = await _getToken();

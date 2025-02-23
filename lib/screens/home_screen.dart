@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:moneymanager/models/income_exepense_model.dart';
 import 'package:moneymanager/models/transaction_model.dart';
+import 'package:moneymanager/providers/transactions/income_expense_controller.dart';
+import 'package:moneymanager/providers/transactions/transaction_controller.dart';
 import 'package:moneymanager/services/balance/balance_info_service.dart';
-import 'package:moneymanager/services/transaction/total_income_expense_service.dart';
-import 'package:moneymanager/services/transaction/transaction_service.dart';
 import 'package:moneymanager/widgets/bottom_tab.dart';
 import 'package:moneymanager/widgets/info_account.dart';
 import 'package:moneymanager/widgets/info_balance.dart';
@@ -23,6 +24,9 @@ class _HomeScreenState extends State<HomeScreen> {
   final balanceInfo = BalanceInfo();
   var totalIncomeToday = IncomeOrExpense("-", "0");
   var totalExpenseToday = IncomeOrExpense("-", "0");
+  TransactionController controller = Get.put(TransactionController());
+  IncomeExpenseController controllerIncomeExpense =
+      Get.put(IncomeExpenseController());
 
   Balance? balance;
   late Future<List<TransactionModel>?> transactions;
@@ -34,47 +38,13 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     _fetchBalanceInfo();
-    _fetchTransactions();
     _checkPermission();
-    _fetchIncomeOrExpense();
   }
 
   Future<void> _fetchBalanceInfo() async {
     Balance? fetchedBalance = await balanceInfo.fetchBalanceInfo();
     setState(() {
       balance = fetchedBalance;
-    });
-  }
-
-  Future<void> _fetchTransactions() async {
-    DateFormat dateFormat = DateFormat('ddMMyyyy');
-    DateTime currentDate = DateTime.now();
-    String? startDate;
-    String? endDate;
-    startDate ??= dateFormat.format(currentDate);
-    endDate ??= dateFormat.format(currentDate);
-
-    transactions = TransactionService().fetchTransactionService(
-        offset: 0, limit: 10, startDate: startDate, endDate: endDate);
-  }
-
-  Future<void> _fetchIncomeOrExpense() async {
-    DateFormat dateFormat = DateFormat('dd-MM-yyyy');
-    DateTime currentDate = DateTime.now();
-    String? startDate;
-    String? endDate;
-    startDate ??= dateFormat.format(currentDate);
-    endDate ??= dateFormat.format(currentDate);
-
-    IncomeOrExpense? a = await TotalExpenseOrIncomeService()
-        .fetchTotalExpenseOrIncomeService(
-            actionName: "Expense", startDate: startDate, endDate: endDate);
-    IncomeOrExpense? b = await TotalExpenseOrIncomeService()
-        .fetchTotalExpenseOrIncomeService(
-            actionName: "Income", startDate: startDate, endDate: endDate);
-    setState(() {
-      totalExpenseToday = a!;
-      totalIncomeToday = b!;
     });
   }
 
@@ -87,6 +57,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    print(_permissionStatus);
+    controllerIncomeExpense.fetchAllData(startDate: "", endDate: "");
+
     return Scaffold(
       body: SingleChildScrollView(
         padding: EdgeInsets.all(12),
@@ -192,38 +165,54 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: SingleChildScrollView(
                       child: Container(
                         height: 250,
-                        child: FutureBuilder<List<TransactionModel>?>(
-                          future: transactions,
-                          builder: (context, snapshot) {
-                            if (snapshot.connectionState ==
-                                ConnectionState.waiting) {
-                              return const Center(
-                                  child: CircularProgressIndicator());
-                            } else if (snapshot.hasError) {
-                              return Center(
-                                  child: Text('Error: ${snapshot.error}'));
-                            } else if (snapshot.hasData) {
-                              final transactions = snapshot.data;
-
-                              if (transactions == null ||
-                                  transactions.isEmpty) {
-                                return const Center(
-                                    child: Text('No transactions found.'));
-                              }
-
-                              return ListView.builder(
-                                itemCount: transactions.length,
-                                itemBuilder: (context, index) {
-                                  return TransactionCard(
-                                      transaction: transactions[index]);
-                                },
-                              );
-                            } else {
-                              return const Center(
-                                  child: Text('No data available.'));
-                            }
-                          },
-                        ),
+                        child: Obx(() {
+                          return controller.isLoadingToday.value
+                              ? Center(child: CircularProgressIndicator())
+                              : Container(
+                                  width: double.infinity,
+                                  height: 250,
+                                  child: SingleChildScrollView(
+                                    child: Container(
+                                      height: 250,
+                                      child: NotificationListener<
+                                          ScrollNotification>(
+                                        onNotification: (scrollNotification) {
+                                          if (scrollNotification
+                                                      .metrics.pixels ==
+                                                  scrollNotification.metrics
+                                                      .maxScrollExtent &&
+                                              !controller.isMoreLoading.value) {
+                                            controller.fetchTransactions(
+                                                rangeType: "now",
+                                                isLoadMore: true);
+                                          }
+                                          return false;
+                                        },
+                                        child: ListView.builder(
+                                          itemCount: controller
+                                                  .todayTransactions.length +
+                                              (controller.isMoreLoading.value
+                                                  ? 1
+                                                  : 0),
+                                          itemBuilder: (context, index) {
+                                            if (index ==
+                                                controller
+                                                    .todayTransactions.length) {
+                                              return const Center(
+                                                  child:
+                                                      CircularProgressIndicator());
+                                            }
+                                            final transaction = controller
+                                                .todayTransactions[index];
+                                            return TransactionCard(
+                                                transaction: transaction);
+                                          },
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                );
+                        }),
                       ),
                     ),
                   ),

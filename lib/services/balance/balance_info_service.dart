@@ -24,7 +24,7 @@ class BalanceInfo {
   }
 
   Future<Balance?> fetchBalanceInfo() async {
-    const url = 'http://108.136.230.98:8080/api/v1/user/info-balance';
+    const url = 'http://185.170.198.166:8080/api/v1/user/info-balance';
     try {
       final token = await _getToken();
       if (token == null) {

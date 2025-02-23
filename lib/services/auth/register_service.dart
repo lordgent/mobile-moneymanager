@@ -11,9 +11,9 @@ class RegisterService {
     return token;
   }
 
-
-  Future<bool> register(String email, String password,String fullName,String phoneNumber) async {
-    const url = 'http://108.136.230.98:8080/api/v1/auth/register';
+  Future<bool> register(String email, String password, String fullName,
+      String phoneNumber) async {
+    const url = 'http://185.170.198.166:8080/api/v1/auth/register';
 
     try {
       final response = await http.post(
@@ -46,10 +46,9 @@ class RegisterService {
     }
   }
 
-  
   Future<bool> verificationOtp(String code) async {
-    const url = 'http://108.136.230.98:8080/api/v1/auth/verification-account';
-      final token = await _getToken();
+    const url = 'http://185.170.198.166:8080/api/v1/auth/verification-account';
+    final token = await _getToken();
 
     try {
       final response = await http.post(
@@ -77,6 +76,4 @@ class RegisterService {
       return false;
     }
   }
-
-
 }

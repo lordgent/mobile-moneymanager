@@ -1,29 +1,33 @@
 import 'package:intl/intl.dart';
 
-class DateRange {
-  final DateTime startDate;
-  final DateTime endDate;
+class DateHelper {
+  static Map<String, String> getDateRange(String type) {
+    DateFormat dateFormat = DateFormat('ddMMyyyy');
+    DateTime now = DateTime.now();
+    String startDate, endDate;
 
-  DateRange({required this.startDate, required this.endDate});
+    if (type == "now") {
+      startDate = dateFormat.format(now);
+      endDate = dateFormat.format(now);
+    } else if (type == "week") {
+      DateTime startOfWeek = now.subtract(Duration(days: 7));
+      startDate = dateFormat.format(startOfWeek);
+      endDate = dateFormat.format(now);
+    } else if (type == "month") {
+      DateTime startOfMonth = DateTime(now.year, now.month - 1, now.day);
+      startDate = dateFormat.format(startOfMonth);
+      endDate = dateFormat.format(now);
+    } else if (type == "yesterday") {
+      DateTime yesterday = now.subtract(Duration(days: 1));
+      startDate = dateFormat.format(yesterday);
+      endDate = dateFormat.format(yesterday);
+    } else {
+      throw ArgumentError("Invalid date range type: $type");
+    }
 
-  String getFormattedStartDate() => DateFormat('yyyy-dd-MM').format(startDate);
-  String getFormattedEndDate() => DateFormat('yyyy-dd-MM').format(endDate);
-}
-
-DateRange getDateRange(String period) {
-  DateTime today = DateTime.now();
-  DateTime startDate;
-
-  if (period == 'month') {
-    startDate = DateTime(today.year, today.month - 1, today.day);
-  } else if (period == 'week') {
-    startDate = today.subtract(Duration(days: 7));
-  } else if (period == 'year') {
-    startDate = DateTime(today.year - 1, today.month, today.day);
-  } else {
-    throw ArgumentError(
-        'Invalid period. Only "month", "week", or "year" are allowed.');
+    return {
+      "startDate": startDate,
+      "endDate": endDate,
+    };
   }
-
-  return DateRange(startDate: startDate, endDate: today);
 }

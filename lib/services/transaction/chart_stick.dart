@@ -14,7 +14,7 @@ class ChartStickExpenseOrIncome {
 
   Future<List<ChartIncomeOrExpense>?> fetchChartStickExpenseOrIncome(
       {String? startDate, String? endDate, String? actionName}) async {
-    const url = 'http://108.136.230.98:8080/api/v1/user/chart-expense';
+    const url = 'http://185.170.198.166:8080/api/v1/user/chart-expense';
 
     DateFormat dateFormat = DateFormat('dd-MM-yyyy');
     DateTime currentDate = DateTime.now();
